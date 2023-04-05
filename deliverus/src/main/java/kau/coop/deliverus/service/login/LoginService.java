@@ -1,4 +1,6 @@
 package kau.coop.deliverus.service.login;
 
-interface LoginService {
+public interface LoginService {
+
+    void login(String userid, String passwd) throws Exception;
 }

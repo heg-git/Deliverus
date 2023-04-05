@@ -1,8 +1,8 @@
 package kau.coop.deliverus.domain.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Menu {
-    List<String> food;
-    List<Integer> price;
+
+    private ArrayList<Food> menu;
 }
