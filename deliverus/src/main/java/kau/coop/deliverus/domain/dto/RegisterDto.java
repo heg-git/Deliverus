@@ -13,4 +13,9 @@ public class RegisterDto {
     private String userid;
     private String passwd;
 
+    public RegisterDto(String nickname, String userid, String passwd) {
+        this.nickname = nickname;
+        this.userid = userid;
+        this.passwd = passwd;
+    }
 }

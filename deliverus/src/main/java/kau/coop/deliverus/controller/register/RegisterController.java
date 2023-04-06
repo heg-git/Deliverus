@@ -20,10 +20,10 @@ public class RegisterController {
 
     @PostMapping(value = "/member/register")
 //    public String postRegister(@RequestParam(name = "nickname") String nickname, @RequestParam(name = "id") String userid, @RequestParam(name = "passwd") String passwd) {
-    public Member postRegister(@RequestBody RegisterDto register){
+    public RegisterDto postRegister(@RequestBody RegisterDto register){
         try {
-            Member member = memberService.register(register.getNickname(), register.getUserid(), register.getPasswd());
-            return member;
+            RegisterDto newRegister = memberService.register(register.getNickname(), register.getUserid(), register.getPasswd());
+            return newRegister;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
