@@ -1,6 +1,6 @@
 package kau.coop.deliverus.service.deliveryagent;
 
-import kau.coop.deliverus.domain.entity.Menu;
+import kau.coop.deliverus.domain.entity.Food;
 import kau.coop.deliverus.domain.entity.Order;
 import kau.coop.deliverus.domain.entity.Restaurant;
 
@@ -18,7 +18,7 @@ public interface DeliveryAgentService {
      * 식당 메뉴 조회하는 메서드
      * @return
      */
-    Menu inquireRestaurantMenu();
+    Food inquireRestaurantMenu();
 
     /**
      * 주문 요청하는 메서드

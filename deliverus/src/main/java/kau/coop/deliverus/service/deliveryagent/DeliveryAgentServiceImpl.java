@@ -1,6 +1,6 @@
 package kau.coop.deliverus.service.deliveryagent;
 
-import kau.coop.deliverus.domain.entity.Menu;
+import kau.coop.deliverus.domain.entity.Food;
 import kau.coop.deliverus.domain.entity.Order;
 import kau.coop.deliverus.domain.entity.Restaurant;
 import kau.coop.deliverus.repository.order.OrderRepository;
@@ -21,7 +21,7 @@ public class DeliveryAgentServiceImpl implements DeliveryAgentService{
     }
 
     @Override
-    public Menu inquireRestaurantMenu() {
+    public Food inquireRestaurantMenu() {
         return null;
     }
 
