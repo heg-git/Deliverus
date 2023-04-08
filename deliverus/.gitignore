@@ -37,4 +37,6 @@ out/
 .vscode/
 
 ### Extra ###
-src/main/resources/application.properites
+.DS_Store
+src/main/resources/application.properties
+

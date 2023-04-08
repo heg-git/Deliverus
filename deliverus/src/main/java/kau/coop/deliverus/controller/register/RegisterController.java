@@ -4,28 +4,23 @@ import kau.coop.deliverus.domain.dto.RegisterDto;
 import kau.coop.deliverus.domain.entity.Member;
 import kau.coop.deliverus.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class RegisterController {
 
     private final MemberService memberService;
 
-    @GetMapping(value = "/member/register")
-    public void getRegister() {
-        System.out.println("회원가입 페이지");
-    }
-
-
     @PostMapping(value = "/member/register")
-//    public String postRegister(@RequestParam(name = "nickname") String nickname, @RequestParam(name = "id") String userid, @RequestParam(name = "passwd") String passwd) {
     public RegisterDto postRegister(@RequestBody RegisterDto register){
         try {
-            RegisterDto newRegister = memberService.register(register.getNickname(), register.getUserid(), register.getPasswd());
-            return newRegister;
+            memberService.register(register.getNickname(), register.getUserid(), register.getPasswd());
+            return register;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.info("회원가입 문제 발생 : " + e.getMessage());
             return null;
         }
     }

@@ -3,16 +3,16 @@ package kau.coop.deliverus.controller.login;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import kau.coop.deliverus.domain.UserInfo;
-import kau.coop.deliverus.domain.dto.LoginFormDto;
-import kau.coop.deliverus.domain.session.SessionManager;
+import kau.coop.deliverus.domain.dto.LoginDto;
+import kau.coop.deliverus.domain.entity.Member;
 import kau.coop.deliverus.service.login.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+
+import static kau.coop.deliverus.domain.session.SessionConst.LOGIN_MEMBER;
 
 
 @RestController
@@ -21,40 +21,36 @@ import java.io.IOException;
 public class LoginController {
 
     private final LoginService loginService;
-    private final SessionManager sessionManager;
 
-    @GetMapping("/member/login")
-    public String test(HttpServletRequest request, HttpServletResponse response) {
-        Object session = sessionManager.getSession(request);
+    @GetMapping("important")
+    public String needLoginVerification(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
         if(session == null) {
             try {
-                response.sendRedirect("/member/login/loginForm");
+                response.sendRedirect("login");
+                return "로그인 필요";
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.error("로그인 페이지로 이동 실패 : " + e);
+                return "로그인 필요";
             }
         }
-        else{
-            // 세션 정보가 있다면
-            log.info("login 되어있음");
+        else {
+            return "이미 로그인 되었어요";
         }
-        return "hello";
     }
 
-    @GetMapping("/member/login/loginForm")
-    public String loginForm() {
-        return "login form";
-    }
-    @PostMapping("/member/login/loginForm")
-    public String loginProc(@RequestBody LoginFormDto login, BindingResult bindingResult, HttpServletResponse response) {
+    @PostMapping("login")
+    public String loginProc(@RequestBody LoginDto loginDto, HttpServletRequest request) {
         try {
-            loginService.login(login.getUserid(), login.getPasswd());
-            UserInfo userInfo = new UserInfo("hhtboy", 24);
-            sessionManager.createSession(userInfo, response);
-            return "login success!";
+            Member member = loginService.login(loginDto.getUserid(), loginDto.getPasswd());
+            HttpSession session = request.getSession(true);
+            session.setAttribute(LOGIN_MEMBER, member);
+            log.info("새로운 세션 멤버 생성 : " + member.getUserid());
+            return "login 성공!!";
+
         } catch (Exception e) {
-            log.error(e.getMessage());
-            bindingResult.reject(e.getMessage());
-            return "login failed..";
+            return "login 실패..";
         }
+
     }
 }

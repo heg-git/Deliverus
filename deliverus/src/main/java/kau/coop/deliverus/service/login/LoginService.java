@@ -1,6 +1,8 @@
 package kau.coop.deliverus.service.login;
 
+import kau.coop.deliverus.domain.entity.Member;
+
 public interface LoginService {
 
-    void login(String userid, String passwd) throws Exception;
+    Member login(String userid, String passwd) throws Exception;
 }
