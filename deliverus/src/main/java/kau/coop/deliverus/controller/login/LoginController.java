@@ -23,20 +23,21 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    @GetMapping("/important")
-    public String needLoginVerification(@SessionAttribute(name = LOGIN_MEMBER, required = false) Member member, HttpServletResponse response) {
-        if(member == null) {
-            try {
-                response.sendRedirect("/login");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return "로그인 필요";
-        }
-        else {
-            return "이미 로그인 되었어요";
-        }
-    }
+    //이건 테스트 코드. 세션 검증이 필요한 api에 대해서 이렇게 사용하면 됨.
+//    @GetMapping("/important")
+//    public String needLoginVerification(@SessionAttribute(name = LOGIN_MEMBER, required = false) Member member, HttpServletResponse response) {
+//        if(member == null) {
+//            try {
+//                response.sendRedirect("/login");
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            return "로그인 필요";
+//        }
+//        else {
+//            return "이미 로그인 되었어요";
+//        }
+//    }
 
     @PostMapping("/login")
     public String loginProc(@RequestBody LoginDto loginDto, HttpServletRequest request) {
