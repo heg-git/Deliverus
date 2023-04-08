@@ -18,28 +18,27 @@ import static kau.coop.deliverus.domain.session.SessionConst.LOGIN_MEMBER;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin("*")
 public class LoginController {
 
     private final LoginService loginService;
 
-    @GetMapping("important")
-    public String needLoginVerification(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-        if(session == null) {
+    @GetMapping("/important")
+    public String needLoginVerification(@SessionAttribute(name = LOGIN_MEMBER, required = false) Member member, HttpServletResponse response) {
+        if(member == null) {
             try {
-                response.sendRedirect("login");
-                return "로그인 필요";
+                response.sendRedirect("/login");
             } catch (IOException e) {
-                log.error("로그인 페이지로 이동 실패 : " + e);
-                return "로그인 필요";
+                throw new RuntimeException(e);
             }
+            return "로그인 필요";
         }
         else {
             return "이미 로그인 되었어요";
         }
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public String loginProc(@RequestBody LoginDto loginDto, HttpServletRequest request) {
         try {
             Member member = loginService.login(loginDto.getUserid(), loginDto.getPasswd());
@@ -51,6 +50,5 @@ public class LoginController {
         } catch (Exception e) {
             return "login 실패..";
         }
-
     }
 }
