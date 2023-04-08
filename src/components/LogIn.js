@@ -13,11 +13,29 @@ const LogIn = ({ handleLogIn }) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const getLogInResult = async (data) => {
+    const url = "http:localhost:8080/login";
+    const response = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 이곳에서 로그인을 합니다.
-    if (username === "" && password === "") {
-      handleLogIn();
+    const data = { userid: username, passwd: password };
+    try {
+      const result = await getLogInResult(data);
+      if (result === "success") {
+        console.log("Log In Success");
+        handleLogIn();
+      } else {
+        console.log("Log In failed from server");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 

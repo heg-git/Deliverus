@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
@@ -17,18 +19,32 @@ const Register = () => {
     setNickname(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const getRegistrationResult = async (data) => {
     const url = "http:localhost:8080/member/register";
-    const data = { username: username, nickname: nickname, password: password };
     const response = await fetch(url, {
       method: "POST",
       credentials: "include",
       body: JSON.stringify(data),
     });
+
+    return response.json();
   };
 
-  const postRegisteration = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = { userid: username, nickname: nickname, passwd: password };
+    try {
+      const result = await getRegistrationResult(data);
+      if (result.nickname) {
+        console.log("Registration Success");
+        navigate("/");
+      } else {
+        console.log("Registration Fail");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
