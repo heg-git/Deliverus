@@ -14,13 +14,16 @@ const LogIn = ({ handleLogIn }) => {
   };
 
   const getLogInResult = async (data) => {
-    const url = "http:localhost:8080/login";
+    const url = "http://localhost:8080/login";
     const response = await fetch(url, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       credentials: "include",
       body: JSON.stringify(data),
     });
-    return response.json();
+    return response.text();
   };
 
   const handleSubmit = async (e) => {
