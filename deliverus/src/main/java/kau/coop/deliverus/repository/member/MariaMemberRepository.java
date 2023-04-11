@@ -4,11 +4,12 @@ import jakarta.persistence.EntityManager;
 import kau.coop.deliverus.domain.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class MariaMemberRepository implements MemberRepository{
 
@@ -22,6 +23,7 @@ public class MariaMemberRepository implements MemberRepository{
     @Override
     public Optional<Member> findById(Long id) {
         Member member = em.find(Member.class, id);
+
         return Optional.ofNullable(member);
     }
 
