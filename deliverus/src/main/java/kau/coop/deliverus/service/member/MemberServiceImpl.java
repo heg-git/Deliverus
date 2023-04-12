@@ -1,6 +1,6 @@
 package kau.coop.deliverus.service.member;
 
-import kau.coop.deliverus.domain.dto.RegisterDto;
+import kau.coop.deliverus.domain.dto.request.RegisterRequestDto;
 import kau.coop.deliverus.domain.entity.Member;
 import kau.coop.deliverus.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +17,13 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Override
-    public RegisterDto register(String nickname, String userid, String passwd) throws Exception {
+    public RegisterRequestDto register(String nickname, String userid, String passwd) throws Exception {
         Member member = memberRepository.join(validateMember(nickname, userid, passwd));
-        return new RegisterDto(member.getNickname(), member.getUserid(), member.getPasswd());
+        return new RegisterRequestDto(member.getNickname(), member.getUserid(), member.getPasswd());
     }
 
     @Override
-    public Optional<RegisterDto> findOne(Long id) {
+    public Optional<RegisterRequestDto> findOne(Long id) {
         return Optional.empty();
     }
 

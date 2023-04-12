@@ -1,13 +1,12 @@
 package kau.coop.deliverus.service.member;
 
-import kau.coop.deliverus.domain.dto.RegisterDto;
-import kau.coop.deliverus.domain.entity.Member;
+import kau.coop.deliverus.domain.dto.request.RegisterRequestDto;
 
 import java.util.Optional;
 
 public interface MemberService {
 
-    RegisterDto register(String nickname, String userid, String passwd) throws Exception;
+    RegisterRequestDto register(String nickname, String userid, String passwd) throws Exception;
 
-    Optional<RegisterDto> findOne(Long id);
+    Optional<RegisterRequestDto> findOne(Long id);
 }

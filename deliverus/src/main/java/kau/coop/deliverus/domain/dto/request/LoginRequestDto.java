@@ -1,9 +1,9 @@
-package kau.coop.deliverus.domain.dto;
+package kau.coop.deliverus.domain.dto.request;
 
 import lombok.Getter;
 
 @Getter
-public class LoginDto {
+public class LoginRequestDto {
 
     private String userid;
     private String passwd;
