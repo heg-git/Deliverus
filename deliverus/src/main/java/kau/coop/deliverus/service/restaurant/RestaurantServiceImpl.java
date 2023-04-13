@@ -1,6 +1,10 @@
 package kau.coop.deliverus.service.restaurant;
 
-import kau.coop.deliverus.domain.dto.RestaurantDto;
+import kau.coop.deliverus.domain.dto.request.MenuRequestDto;
+import kau.coop.deliverus.domain.dto.response.MenuResponseDto;
+import kau.coop.deliverus.domain.dto.request.RestaurantRequestDto;
+import kau.coop.deliverus.domain.dto.response.RestaurantResponseDto;
+import kau.coop.deliverus.domain.entity.Menu;
 import kau.coop.deliverus.domain.entity.Restaurant;
 import kau.coop.deliverus.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +23,20 @@ public class RestaurantServiceImpl implements RestaurantService{
 
     private final RestaurantRepository restaurantRepository;
 
+    /**
+     * request에 맞는 식당 가게 리스트를 반환합니다.
+     */
     @Override
-    public List<RestaurantDto> getRestaurant() {
+    public List<RestaurantResponseDto> getRestaurant(RestaurantRequestDto requestDto) {
+        List<RestaurantResponseDto> restaurantDto = new ArrayList<>();
+
+        /* 여기부터 --------------------------------------------------------*/
         List<Restaurant> restaurants = restaurantRepository.getAll();
-        List<RestaurantDto> restaurantDto = new ArrayList<>();
+        /* 여기까지 수정 ------------------------------------------------------- */
 
         for(Restaurant r : restaurants) {
 
-            RestaurantDto restaurant = RestaurantDto.builder()
+            RestaurantResponseDto restaurant = RestaurantResponseDto.builder()
                     .name(r.getName())
                     .address(r.getAddress())
                     .phoneNumber(r.getPhoneNumber())
@@ -41,8 +51,38 @@ public class RestaurantServiceImpl implements RestaurantService{
         return restaurantDto;
     }
 
+    /**
+     * 모든 식당 가게에 대한 리스트를 반환합니다.
+     */
     @Override
-    public void putRestaurant(RestaurantDto restaurantDto) {
+    public List<RestaurantResponseDto> getRestaurant() {
+        List<RestaurantResponseDto> restaurantDto = new ArrayList<>();
+
+        List<Restaurant> restaurants = restaurantRepository.getAll();
+
+        for(Restaurant r : restaurants) {
+
+            RestaurantResponseDto restaurant = RestaurantResponseDto.builder()
+                    .name(r.getName())
+                    .address(r.getAddress())
+                    .phoneNumber(r.getPhoneNumber())
+                    .category(r.getCategory())
+                    .rating(r.getRating())
+                    .menu(r.getMenu())
+                    .build();
+
+            restaurantDto.add(restaurant);
+        }
+        return restaurantDto;
+    }
+
+    @Override
+    public MenuResponseDto getMenu(MenuRequestDto requestDto) {
+        return null;
+    }
+
+    @Override
+    public void putRestaurant(RestaurantResponseDto restaurantDto) {
 
         Restaurant restaurant = Restaurant.builder()
                 .name(restaurantDto.getName())

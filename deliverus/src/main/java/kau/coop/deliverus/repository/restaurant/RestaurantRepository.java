@@ -1,6 +1,5 @@
 package kau.coop.deliverus.repository.restaurant;
 
-import kau.coop.deliverus.domain.dto.RestaurantDto;
 import kau.coop.deliverus.domain.entity.Restaurant;
 
 import java.util.List;
