@@ -19,6 +19,8 @@ public class Restaurant {
     String phoneNumber;
     String category;
     Double rating;
+    Double latitude;
+    Double longitude;
 
     @Embedded
     Menu menu;

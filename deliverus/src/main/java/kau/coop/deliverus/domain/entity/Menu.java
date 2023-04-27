@@ -14,7 +14,7 @@ public class Menu {
     @ElementCollection
     @CollectionTable(
             name = "restaurant_menu",
-            joinColumns = @JoinColumn(name = "id")
+            joinColumns = @JoinColumn(name = "restaurant_id")
     )
 
     private List<Food> menu;

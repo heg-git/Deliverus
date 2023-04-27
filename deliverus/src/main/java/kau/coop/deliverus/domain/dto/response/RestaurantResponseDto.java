@@ -14,5 +14,7 @@ public class RestaurantResponseDto  {
     private String phoneNumber;
     private String category;
     private Double rating;
+    private Double latitude;
+    private Double longitude;
     private Menu menu;
 }

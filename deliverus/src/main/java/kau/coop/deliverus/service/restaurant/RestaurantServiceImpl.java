@@ -28,6 +28,7 @@ public class RestaurantServiceImpl implements RestaurantService{
      */
     @Override
     public List<RestaurantResponseDto> getRestaurant(RestaurantRequestDto requestDto) {
+
         List<RestaurantResponseDto> restaurantDto = new ArrayList<>();
 
         /* 여기부터 --------------------------------------------------------*/
@@ -43,6 +44,8 @@ public class RestaurantServiceImpl implements RestaurantService{
                     .category(r.getCategory())
                     .rating(r.getRating())
                     .menu(r.getMenu())
+                    .latitude(r.getLatitude())
+                    .longitude(r.getLongitude())
                     .build();
 
             restaurantDto.add(restaurant);
@@ -56,6 +59,7 @@ public class RestaurantServiceImpl implements RestaurantService{
      */
     @Override
     public List<RestaurantResponseDto> getRestaurant() {
+
         List<RestaurantResponseDto> restaurantDto = new ArrayList<>();
 
         List<Restaurant> restaurants = restaurantRepository.getAll();
@@ -69,6 +73,8 @@ public class RestaurantServiceImpl implements RestaurantService{
                     .category(r.getCategory())
                     .rating(r.getRating())
                     .menu(r.getMenu())
+                    .latitude(r.getLatitude())
+                    .longitude(r.getLongitude())
                     .build();
 
             restaurantDto.add(restaurant);
