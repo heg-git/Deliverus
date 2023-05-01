@@ -1,10 +1,9 @@
 package kau.coop.deliverus.service.restaurant;
 
 import kau.coop.deliverus.domain.dto.request.MenuRequestDto;
-import kau.coop.deliverus.domain.dto.response.MenuResponseDto;
+import kau.coop.deliverus.domain.dto.response.FoodResponseDto;
 import kau.coop.deliverus.domain.dto.request.RestaurantRequestDto;
 import kau.coop.deliverus.domain.dto.response.RestaurantResponseDto;
-import kau.coop.deliverus.domain.entity.Menu;
 import kau.coop.deliverus.domain.entity.Restaurant;
 import kau.coop.deliverus.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +76,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
-    public MenuResponseDto getMenu(MenuRequestDto requestDto) {
+    public FoodResponseDto getMenu(MenuRequestDto requestDto) {
         return null;
     }
 

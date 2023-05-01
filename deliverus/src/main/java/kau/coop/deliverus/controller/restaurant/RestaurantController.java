@@ -52,7 +52,7 @@ public class RestaurantController {
      * 가게에 대한 메뉴 정보를 가져오는 api 입니다.
      */
 //    @GetMapping("/api/restaurant/menu")
-//    public MenuResponseDto getMenu(){
+//    public List<FoodResponseDto> getMenu(){
 ////        return restaurantService.getMenu(requestDto);
 //        return null;
 //    }
