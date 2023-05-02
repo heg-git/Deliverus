@@ -2,18 +2,19 @@ package kau.coop.deliverus.service.restaurant;
 
 import kau.coop.deliverus.domain.dto.request.MenuRequestDto;
 import kau.coop.deliverus.domain.dto.response.FoodResponseDto;
-import kau.coop.deliverus.domain.dto.request.RestaurantRequestDto;
-import kau.coop.deliverus.domain.dto.response.RestaurantResponseDto;
+import kau.coop.deliverus.domain.dto.request.RestaurantInfoRequestDto;
+import kau.coop.deliverus.domain.dto.response.RestaurantListResponseDto;
+import kau.coop.deliverus.domain.dto.response.RestaurantInfoResponseDto;
 
 import java.util.List;
 
 public interface RestaurantService {
 
-    List<RestaurantResponseDto> getRestaurant(RestaurantRequestDto requestDto);
+    RestaurantInfoResponseDto getRestaurantInfo(Long id);
 
-    List<RestaurantResponseDto> getRestaurant();
+    List<RestaurantListResponseDto> getRestaurantList();
 
     FoodResponseDto getMenu(MenuRequestDto requestDto);
 
-    void putRestaurant(RestaurantResponseDto restaurantDto);
+    void putRestaurant(RestaurantInfoResponseDto restaurantDto);
 }

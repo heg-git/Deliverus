@@ -2,8 +2,8 @@ package kau.coop.deliverus.service.restaurant;
 
 import kau.coop.deliverus.domain.dto.request.MenuRequestDto;
 import kau.coop.deliverus.domain.dto.response.FoodResponseDto;
-import kau.coop.deliverus.domain.dto.request.RestaurantRequestDto;
-import kau.coop.deliverus.domain.dto.response.RestaurantResponseDto;
+import kau.coop.deliverus.domain.dto.response.RestaurantListResponseDto;
+import kau.coop.deliverus.domain.dto.response.RestaurantInfoResponseDto;
 import kau.coop.deliverus.domain.entity.Restaurant;
 import kau.coop.deliverus.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,48 +26,37 @@ public class RestaurantServiceImpl implements RestaurantService{
      * request에 맞는 식당 가게 리스트를 반환합니다.
      */
     @Override
-    public List<RestaurantResponseDto> getRestaurant(RestaurantRequestDto requestDto) {
-        List<RestaurantResponseDto> restaurantDto = new ArrayList<>();
-
-        /* 여기부터 --------------------------------------------------------*/
-        List<Restaurant> restaurants = restaurantRepository.getAll();
-        /* 여기까지 수정 ------------------------------------------------------- */
-
-        for(Restaurant r : restaurants) {
-
-            RestaurantResponseDto restaurant = RestaurantResponseDto.builder()
-                    .name(r.getName())
-                    .address(r.getAddress())
-                    .phoneNumber(r.getPhoneNumber())
-                    .category(r.getCategory())
-                    .rating(r.getRating())
-                    .menu(r.getMenu())
-                    .build();
-
-            restaurantDto.add(restaurant);
+    public RestaurantInfoResponseDto getRestaurantInfo(Long id) {
+        Restaurant restaurantInfo = restaurantRepository.getOneById(id);
+        if (restaurantInfo == null) {
+            return null;
         }
 
-        return restaurantDto;
+        return RestaurantInfoResponseDto.builder()
+                .name(restaurantInfo.getName())
+                .menu(restaurantInfo.getMenu())
+                .phoneNumber(restaurantInfo.getPhoneNumber())
+                .address(restaurantInfo.getAddress())
+                .rating(restaurantInfo.getRating())
+                .category(restaurantInfo.getCategory())
+                .build();
     }
 
     /**
      * 모든 식당 가게에 대한 리스트를 반환합니다.
      */
     @Override
-    public List<RestaurantResponseDto> getRestaurant() {
-        List<RestaurantResponseDto> restaurantDto = new ArrayList<>();
+    public List<RestaurantListResponseDto> getRestaurantList() {
+        List<RestaurantListResponseDto> restaurantDto = new ArrayList<>();
 
         List<Restaurant> restaurants = restaurantRepository.getAll();
 
         for(Restaurant r : restaurants) {
 
-            RestaurantResponseDto restaurant = RestaurantResponseDto.builder()
+            RestaurantListResponseDto restaurant = RestaurantListResponseDto.builder()
+                    .restaurant_id(r.getRestaurant_id())
                     .name(r.getName())
-                    .address(r.getAddress())
-                    .phoneNumber(r.getPhoneNumber())
-                    .category(r.getCategory())
                     .rating(r.getRating())
-                    .menu(r.getMenu())
                     .build();
 
             restaurantDto.add(restaurant);
@@ -81,7 +70,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
-    public void putRestaurant(RestaurantResponseDto restaurantDto) {
+    public void putRestaurant(RestaurantInfoResponseDto restaurantDto) {
 
         Restaurant restaurant = Restaurant.builder()
                 .name(restaurantDto.getName())

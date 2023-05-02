@@ -8,6 +8,8 @@ public interface RestaurantRepository {
 
     List<Restaurant> getAll();
 
+    Restaurant getOneById(Long id);
+
     void join(Restaurant restaurant);
 
 }
