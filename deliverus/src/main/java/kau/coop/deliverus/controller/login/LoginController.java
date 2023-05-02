@@ -25,17 +25,6 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    //이건 테스트 코드. 세션 검증이 필요한 api에 대해서 이렇게 사용하면 됨.
-//    @GetMapping("/api/important")
-//    public TestResponseDto needLoginVerification(@SessionAttribute(name = LOGIN_MEMBER, required = false) MemberModel model) {
-//        if(model != null) {
-//            return new TestResponseDto(true);
-//        }
-//        else {
-//            return new TestResponseDto(false);
-//        }
-//    }
-
     @PostMapping("/api/member/login")
     public ResponseEntity<LoginResponseDto> loginProc(@RequestBody LoginRequestDto loginDto, HttpServletRequest request) {
 
