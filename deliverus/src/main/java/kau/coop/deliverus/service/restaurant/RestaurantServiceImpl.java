@@ -1,7 +1,5 @@
 package kau.coop.deliverus.service.restaurant;
 
-import kau.coop.deliverus.domain.dto.request.MenuRequestDto;
-import kau.coop.deliverus.domain.dto.response.FoodResponseDto;
 import kau.coop.deliverus.domain.dto.response.RestaurantListResponseDto;
 import kau.coop.deliverus.domain.dto.response.RestaurantInfoResponseDto;
 import kau.coop.deliverus.domain.entity.Restaurant;
@@ -63,26 +61,4 @@ public class RestaurantServiceImpl implements RestaurantService{
         }
         return restaurantDto;
     }
-
-    @Override
-    public FoodResponseDto getMenu(MenuRequestDto requestDto) {
-        return null;
-    }
-
-    @Override
-    public void putRestaurant(RestaurantInfoResponseDto restaurantDto) {
-
-        Restaurant restaurant = Restaurant.builder()
-                .name(restaurantDto.getName())
-                .address(restaurantDto.getAddress())
-                .phoneNumber(restaurantDto.getPhoneNumber())
-                .category(restaurantDto.getCategory())
-                .rating(restaurantDto.getRating())
-                .menu(restaurantDto.getMenu())
-                .build();
-
-        restaurantRepository.join(restaurant);
-    }
-
-
 }
