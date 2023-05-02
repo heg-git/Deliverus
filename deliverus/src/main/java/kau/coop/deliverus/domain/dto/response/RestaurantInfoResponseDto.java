@@ -2,12 +2,11 @@ package kau.coop.deliverus.domain.dto.response;
 
 import kau.coop.deliverus.domain.entity.Menu;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Builder
 @Getter
 @ToString
-public class RestaurantResponseDto  {
+public class RestaurantInfoResponseDto {
 
     private String name;
     private String address;

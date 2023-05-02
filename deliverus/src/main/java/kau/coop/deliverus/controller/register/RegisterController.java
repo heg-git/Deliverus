@@ -20,6 +20,7 @@ public class RegisterController {
     public ResponseEntity<RegisterResponseDto> postRegister(@RequestBody RegisterRequestDto register){
         try {
             memberService.register(register.getNickname(), register.getUserid(), register.getPasswd());
+            log.info("회원가입 : " + register.getUserid());
             return ResponseEntity.ok(RegisterResponseDto.builder()
                     .id(register.getUserid())
                     .nickname(register.getNickname())

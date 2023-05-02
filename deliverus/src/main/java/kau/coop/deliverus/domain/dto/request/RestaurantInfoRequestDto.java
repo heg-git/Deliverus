@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class MenuRequestDto {
+public class RestaurantInfoRequestDto {
 
-    private String restaurantName;
+    private Long restaurant_id;
 }
