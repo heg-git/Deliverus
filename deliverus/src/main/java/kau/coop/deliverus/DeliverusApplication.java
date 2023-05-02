@@ -19,7 +19,7 @@ public class DeliverusApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping( "/**")
-						.allowedOrigins("http://localhost:3000", "chrome-extension://aejoelaoggembcahagimdiliamlcdmfm") //talend api
+						.allowedOrigins("https://deliverus.online","http://localhost:3000", "chrome-extension://aejoelaoggembcahagimdiliamlcdmfm") //talend api
 						.allowedMethods("*")
 						.maxAge(3000)
 						.allowCredentials(true);

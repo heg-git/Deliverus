@@ -12,6 +12,11 @@ public class MemoryRestaurantRepository implements RestaurantRepository{
     }
 
     @Override
+    public Restaurant getOneById(Long id) {
+        return null;
+    }
+
+    @Override
     public void join(Restaurant restaurant) {
 
     }
