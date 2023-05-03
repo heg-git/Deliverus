@@ -26,12 +26,12 @@ public class RestaurantController {
      * 가게 정보를 가져오는 api 입니다.
      */
     @GetMapping("/api/restaurant/all")
-    public ResponseEntity<List<RestaurantListResponseDto>> getAllRestaurants(HttpServletRequest request) {
+    public ResponseEntity<List<RestaurantListResponseDto>> getAllRestaurants() {
         //세션 검증
-        HttpSession session = request.getSession(false);
-        if(session == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
+//        HttpSession session = request.getSession(false);
+//        if(session == null) {
+//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//        }
 
         //request에 따라서 결과를 전달합니다.
         List<RestaurantListResponseDto> results = restaurantService.getRestaurantList();
@@ -44,12 +44,12 @@ public class RestaurantController {
     }
 
     @PostMapping("/api/restaurant/list")
-    public ResponseEntity<List<RestaurantListResponseDto>> getRestaurantList(@RequestBody RestaurantListRequestDto requestDto, HttpServletRequest request) {
-        //세션 검증
-        HttpSession session = request.getSession(false);
-        if(session == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<List<RestaurantListResponseDto>> getRestaurantList(@RequestBody RestaurantListRequestDto requestDto) {
+//        //세션 검증
+//        HttpSession session = request.getSession(false);
+//        if(session == null) {
+//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//        }
 
         log.info("사용자 위도 : " + requestDto.getLatitude() + " / 경도 : " + requestDto.getLongitude());
 
@@ -64,12 +64,12 @@ public class RestaurantController {
     }
 
     @PostMapping("/api/restaurant/info")
-    public ResponseEntity<RestaurantInfoResponseDto>  getRestaurantInfo(@RequestBody RestaurantInfoRequestDto requestDto, HttpServletRequest request) {
-        //세션 검증
-        HttpSession session = request.getSession(false);
-        if(session == null) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<RestaurantInfoResponseDto>  getRestaurantInfo(@RequestBody RestaurantInfoRequestDto requestDto) {
+//        //세션 검증
+//        HttpSession session = request.getSession(false);
+//        if(session == null) {
+//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//        }
 
         RestaurantInfoResponseDto result = restaurantService.getRestaurantInfo(requestDto.getRestaurant_id());
         if(result != null) {
