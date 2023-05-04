@@ -10,4 +10,5 @@ import lombok.*;
 public class Food {
     private String menuName;
     private Long price;
+    private String menuIntro;
 }

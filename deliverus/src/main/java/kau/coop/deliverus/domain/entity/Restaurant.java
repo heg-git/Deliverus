@@ -13,14 +13,15 @@ public class Restaurant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long restaurant_id;
-    String name;
-    String address;
-    String phoneNumber;
-    String category;
-    Double rating;
-    Double latitude;
-    Double longitude;
+    private Long restaurantId;
+    private String name;
+    private String address;
+    private String phoneNumber;
+    private String category;
+    private Double rating;
+    private Double latitude;
+    private Double longitude;
+    private String restaurantIntro;
 
     @Embedded
     Menu menu;
