@@ -37,6 +37,9 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .address(restaurantInfo.getAddress())
                 .rating(restaurantInfo.getRating())
                 .category(restaurantInfo.getCategory())
+                .intro(restaurantInfo.getRestaurantIntro())
+                .latitude(restaurantInfo.getLatitude())
+                .longitude(restaurantInfo.getLongitude())
                 .build();
     }
 
@@ -55,6 +58,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                     .restaurant_id(r.getRestaurantId())
                     .name(r.getName())
                     .rating(r.getRating())
+                    .intro(r.getRestaurantIntro())
                     .build();
 
             restaurantDto.add(restaurant);

@@ -10,4 +10,6 @@ public class RestaurantListResponseDto {
     private Long restaurant_id;
     private String name;
     private Double rating;
+
+    private String intro;
 }
