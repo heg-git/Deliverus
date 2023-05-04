@@ -16,4 +16,5 @@ public class RestaurantInfoResponseDto {
     private Double latitude;
     private Double longitude;
     private Menu menu;
+    private String intro;
 }
