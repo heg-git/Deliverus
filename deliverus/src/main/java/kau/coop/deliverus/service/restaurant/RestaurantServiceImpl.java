@@ -52,7 +52,7 @@ public class RestaurantServiceImpl implements RestaurantService{
         for(Restaurant r : restaurants) {
 
             RestaurantListResponseDto restaurant = RestaurantListResponseDto.builder()
-                    .restaurant_id(r.getRestaurant_id())
+                    .restaurant_id(r.getRestaurantId())
                     .name(r.getName())
                     .rating(r.getRating())
                     .build();
