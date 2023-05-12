@@ -10,4 +10,6 @@ public interface RestaurantService {
     RestaurantInfoResponseDto getRestaurantInfo(Long id);
 
     List<RestaurantListResponseDto> getRestaurantList();
+
+    List<RestaurantInfoResponseDto> getAll();
 }

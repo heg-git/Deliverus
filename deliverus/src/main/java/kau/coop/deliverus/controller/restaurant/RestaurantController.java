@@ -78,13 +78,8 @@ public class RestaurantController {
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * 임시로 가게 정보를 DB에 넣어주는 api입니다. 다른 방법으로 직접 db에 넣는 것이 좋을 것 같습니다.
-     */
-//    @PostMapping("/api/restaurant")
-//    public RestaurantResponseDto putRestaurant(@RequestBody RestaurantResponseDto restaurant){
-//        restaurantService.putRestaurant(restaurant);
-//        log.info("restaurant = {}", restaurant.toString());
-//        return restaurant;
-//    }
+    @GetMapping("/api/restaurant/menu")
+    public ResponseEntity<List<RestaurantInfoResponseDto>> getAll() {
+        return new ResponseEntity<>(restaurantService.getAll(), HttpStatus.OK);
+    }
 }
