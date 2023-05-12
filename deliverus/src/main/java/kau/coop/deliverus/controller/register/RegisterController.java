@@ -17,13 +17,13 @@ public class RegisterController {
     private final MemberService memberService;
 
     @PostMapping(value = "/api/member/register")
-    public ResponseEntity<RegisterResponseDto> postRegister(@RequestBody RegisterRequestDto register){
+    public ResponseEntity<RegisterResponseDto> postRegister(@RequestBody RegisterRequestDto requestDto){
         try {
-            memberService.register(register.getNickname(), register.getUserid(), register.getPasswd());
-            log.info("회원가입 : " + register.getUserid());
+            memberService.register(requestDto.getNickname(), requestDto.getUserid(), requestDto.getPasswd());
+            log.info("회원가입 : " + requestDto.getUserid());
             return ResponseEntity.ok(RegisterResponseDto.builder()
-                    .id(register.getUserid())
-                    .nickname(register.getNickname())
+                    .id(requestDto.getUserid())
+                    .nickname(requestDto.getNickname())
                     .build());
         } catch (Exception e) {
             log.info("회원가입 문제 발생 : " + e.getMessage());
