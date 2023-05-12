@@ -59,10 +59,35 @@ public class RestaurantServiceImpl implements RestaurantService{
                     .name(r.getName())
                     .rating(r.getRating())
                     .intro(r.getRestaurantIntro())
+                    .category(r.getCategory())
                     .build();
 
             restaurantDto.add(restaurant);
         }
         return restaurantDto;
+    }
+
+    @Override
+    public List<RestaurantInfoResponseDto> getAll() {
+        List<RestaurantInfoResponseDto> result = new ArrayList<>();
+
+        List<Restaurant> restaurants = restaurantRepository.getAll();
+
+        for(Restaurant restaurant : restaurants) {
+            RestaurantInfoResponseDto dto = RestaurantInfoResponseDto.builder()
+                    .longitude(restaurant.getLongitude())
+                    .latitude(restaurant.getLatitude())
+                    .intro(restaurant.getRestaurantIntro())
+                    .address(restaurant.getAddress())
+                    .name(restaurant.getName())
+                    .phoneNumber(restaurant.getPhoneNumber())
+                    .rating(restaurant.getRating())
+                    .menu(restaurant.getMenu())
+                    .category(restaurant.getCategory())
+                    .build();
+
+            result.add(dto);
+        }
+        return result;
     }
 }
