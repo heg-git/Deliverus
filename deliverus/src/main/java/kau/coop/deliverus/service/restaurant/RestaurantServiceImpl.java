@@ -25,7 +25,7 @@ public class RestaurantServiceImpl implements RestaurantService{
      */
     @Override
     public RestaurantInfoResponseDto getRestaurantInfo(Long id) {
-        Restaurant restaurantInfo = restaurantRepository.getOneById(id);
+        Restaurant restaurantInfo = restaurantRepository.findById(id);
         if (restaurantInfo == null) {
             return null;
         }
@@ -50,7 +50,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     public List<RestaurantListResponseDto> getRestaurantList() {
         List<RestaurantListResponseDto> restaurantDto = new ArrayList<>();
 
-        List<Restaurant> restaurants = restaurantRepository.getAll();
+        List<Restaurant> restaurants = restaurantRepository.findAll();
 
         for(Restaurant r : restaurants) {
 
@@ -71,7 +71,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     public List<RestaurantInfoResponseDto> getAll() {
         List<RestaurantInfoResponseDto> result = new ArrayList<>();
 
-        List<Restaurant> restaurants = restaurantRepository.getAll();
+        List<Restaurant> restaurants = restaurantRepository.findAll();
 
         for(Restaurant restaurant : restaurants) {
             RestaurantInfoResponseDto dto = RestaurantInfoResponseDto.builder()

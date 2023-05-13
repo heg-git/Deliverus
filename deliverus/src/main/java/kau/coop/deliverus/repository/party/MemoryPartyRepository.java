@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class MemoryPartyRepository implements PartyRepository{
+
     @Override
-    public List<Party> getALl(Long latitude, Long longitude) {
+    public List<Party> findAll() {
         return null;
     }
 
@@ -18,12 +19,18 @@ public class MemoryPartyRepository implements PartyRepository{
     }
 
     @Override
+    public void memberJoin(PartyMember partyMember, Long partyId) {
+
+    }
+
+    @Override
     public Optional<PartyMember> findByNickname(String nickname) {
         return Optional.empty();
     }
 
     @Override
-    public void delete() {
-
+    public Optional<Party> delete(Long partyId) {
+        return Optional.empty();
     }
+
 }

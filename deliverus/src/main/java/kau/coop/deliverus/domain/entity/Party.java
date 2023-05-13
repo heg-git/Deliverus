@@ -25,7 +25,7 @@ public class Party {
     private Double longitude;
     private Long expireTime;
 
-    @OneToMany(mappedBy="party", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="party", cascade = CascadeType.ALL)
     private List<PartyMember> partyMembers;
 
     public void addPartyMember(PartyMember partyMember){

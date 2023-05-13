@@ -2,7 +2,6 @@ package kau.coop.deliverus.repository.party;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.NonUniqueResultException;
 import kau.coop.deliverus.domain.entity.Party;
 import kau.coop.deliverus.domain.entity.PartyMember;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +19,22 @@ public class MariaPartyRepository implements PartyRepository{
     private final EntityManager em;
 
     @Override
-    public List<Party> getALl(Long latitude, Long longitude) {
-        return null;
+    public List<Party> findAll() {
+        return em.createQuery("select p from Party p", Party.class)
+                .getResultList();
     }
 
     @Override
     public void join(Party party, PartyMember partyMember) {
         party.addPartyMember(partyMember);
         em.persist(party);
+    }
+
+    @Override
+    public void memberJoin(PartyMember partyMember, Long partyId) {
+        Party party = Party.builder().partyId(partyId).build();
+        partyMember.setParty(party);
+        em.persist(partyMember);
     }
 
     @Override
@@ -42,7 +49,13 @@ public class MariaPartyRepository implements PartyRepository{
     }
 
     @Override
-    public void delete() {
-
+    public Optional<Party> delete(Long partyId) {
+        Party party = em.find(Party.class, partyId);
+        if(party != null) {
+            em.remove(party);
+            return Optional.of(party);
+        }
+        else return Optional.empty();
     }
+
 }

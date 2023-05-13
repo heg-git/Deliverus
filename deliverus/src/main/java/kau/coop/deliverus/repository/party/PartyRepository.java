@@ -9,12 +9,16 @@ import java.util.Optional;
 
 public interface PartyRepository {
 
-    List<Party> getALl(Long latitude, Long longitude);
-
     void join(Party party, PartyMember partyMember);
+
+    void memberJoin(PartyMember partyMember, Long partyId);
+
+    List<Party> findAll();
 
     Optional<PartyMember> findByNickname(String nickname);
 
-    void delete();
+
+
+    Optional<Party> delete(Long partyId);
 
 }

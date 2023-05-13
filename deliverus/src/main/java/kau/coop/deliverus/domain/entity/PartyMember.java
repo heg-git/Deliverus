@@ -2,6 +2,8 @@ package kau.coop.deliverus.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class PartyMember {
     private Party party;
 
     @ElementCollection
+    @Cascade(CascadeType.REMOVE)
     @CollectionTable(
             name="\"order\"",
             joinColumns = @JoinColumn(name = "partyMemberId")

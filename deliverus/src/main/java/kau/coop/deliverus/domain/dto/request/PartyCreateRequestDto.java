@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class PartyRequestDto {
+public class PartyCreateRequestDto {
 
     private String partyName;
     private String pickUpAddress;

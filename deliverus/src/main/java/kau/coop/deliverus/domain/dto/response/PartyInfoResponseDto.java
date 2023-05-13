@@ -1,9 +1,9 @@
 package kau.coop.deliverus.domain.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@Builder
-public class PartyResponseDto {
+@Setter
+public class PartyInfoResponseDto {
 }
