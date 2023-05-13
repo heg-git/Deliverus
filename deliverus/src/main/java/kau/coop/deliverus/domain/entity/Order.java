@@ -1,12 +1,18 @@
 package kau.coop.deliverus.domain.entity;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+@Embeddable
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Order {
 
-    private Long memberId;
-    private Food food;
+    private String name;
+    private Long price;
+    private Long num;
 
-    public Order(Long memberId, Food food) {
-        this.memberId = memberId;
-        this.food = food;
-    }
 }

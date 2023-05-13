@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface RestaurantRepository {
 
-    List<Restaurant> getAll();
+    List<Restaurant> findAll();
 
-    Restaurant getOneById(Long id);
+    Restaurant findById(Long id);
 
     void join(Restaurant restaurant);
 

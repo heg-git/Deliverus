@@ -17,13 +17,13 @@ public class MariaRestaurantRepository implements RestaurantRepository {
     private final EntityManager em;
 
     @Override
-    public List<Restaurant> getAll() {
+    public List<Restaurant> findAll() {
         return em.createQuery("select r from Restaurant r", Restaurant.class)
                 .getResultList();
     }
 
     @Override
-    public Restaurant getOneById(Long id) {
+    public Restaurant findById(Long id) {
         Restaurant result;
         try {
             result = em.createQuery("select r from Restaurant r where r.id = :id", Restaurant.class)

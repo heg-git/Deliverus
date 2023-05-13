@@ -7,4 +7,5 @@ public class RestaurantListRequestDto {
 
     private Long latitude;
     private Long longitude;
+
 }

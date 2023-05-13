@@ -26,12 +26,12 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/api/member/login")
-    public ResponseEntity<LoginResponseDto> loginProc(@RequestBody LoginRequestDto loginDto, HttpServletRequest request) {
+    public ResponseEntity<LoginResponseDto> loginProc(@RequestBody LoginRequestDto requestDto, HttpServletRequest request) {
 
-        log.info("id : " + loginDto.getUserid() + "   pw : " + loginDto.getPasswd());
+        log.info("id : " + requestDto.getUserid() + "   pw : " + requestDto.getPasswd());
 
         try {
-            Member member = loginService.login(loginDto.getUserid(), loginDto.getPasswd());
+            Member member = loginService.login(requestDto.getUserid(), requestDto.getPasswd());
             HttpSession session = request.getSession(true);
             session.setAttribute(LOGIN_MEMBER, new MemberModel(member.getNickname()));
             log.info("새로운 세션 멤버 생성 : " + member.getUserid());

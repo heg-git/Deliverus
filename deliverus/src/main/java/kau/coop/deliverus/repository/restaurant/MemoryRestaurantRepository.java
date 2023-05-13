@@ -7,12 +7,12 @@ import java.util.List;
 public class MemoryRestaurantRepository implements RestaurantRepository{
 
     @Override
-    public List<Restaurant> getAll() {
+    public List<Restaurant> findAll() {
         return null;
     }
 
     @Override
-    public Restaurant getOneById(Long id) {
+    public Restaurant findById(Long id) {
         return null;
     }
 
