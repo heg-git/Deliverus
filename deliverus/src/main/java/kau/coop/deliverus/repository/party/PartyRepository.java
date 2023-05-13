@@ -17,7 +17,9 @@ public interface PartyRepository {
 
     Optional<PartyMember> findByNickname(String nickname);
 
+    Optional<PartyMember> deleteMember(String nickname);
 
+    Optional<Party> findById(Long partyId);
 
     Optional<Party> delete(Long partyId);
 

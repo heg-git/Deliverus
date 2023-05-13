@@ -1,9 +1,29 @@
 package kau.coop.deliverus.domain.dto.response;
 
+import kau.coop.deliverus.domain.entity.PartyMember;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PartyInfoResponseDto {
+
+    private String partyName;
+    private String host;
+    private String pickUpAddress;
+    private Long memberNum;
+    private Double latitude;
+    private Double longitude;
+    private List<PartyMemberResponseDto> partyMembers;
+    private String restaurantName;
+    private String category;
+    private Long deliveryFee;
+
+
 }

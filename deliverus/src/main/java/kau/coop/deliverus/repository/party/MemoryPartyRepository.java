@@ -29,6 +29,16 @@ public class MemoryPartyRepository implements PartyRepository{
     }
 
     @Override
+    public Optional<PartyMember> deleteMember(String nickname) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Party> findById(Long partyId) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Party> delete(Long partyId) {
         return Optional.empty();
     }

@@ -1,9 +1,11 @@
 package kau.coop.deliverus.service.party;
 
 import kau.coop.deliverus.domain.dto.request.PartyCreateRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyLocationRequestDto;
+import kau.coop.deliverus.domain.dto.request.PartyListRequestDto;
 import kau.coop.deliverus.domain.dto.request.PartyMemberRequestDto;
+import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyListResponseDto;
+import kau.coop.deliverus.domain.dto.response.PartyMemberResponseDto;
 import kau.coop.deliverus.domain.entity.Party;
 import kau.coop.deliverus.domain.entity.PartyMember;
 import kau.coop.deliverus.domain.entity.Restaurant;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,23 +59,30 @@ public class PartyServiceImpl implements PartyService{
     }
 
     @Override
-    public void deleteParty(Long id) throws Exception{
-        if(partyRepository.delete(id).isEmpty()) throw new Exception("No content to delete");
+    public void deleteParty(Long partyId) throws Exception{
+        if(partyRepository.delete(partyId).isEmpty()) throw new Exception("No content to delete");
     }
 
     @Override
     public void participateParty(PartyMemberRequestDto requestDto) throws Exception {
 
+        Party party = partyRepository.findById(requestDto.getPartyId()).get();
+        if (party.getPartyMembers().size() >= party.getMemberNum()) {
+            log.info("party 꽉참");
+            throw new Exception("Party is full");
+        }
+
         PartyMember partyMember = PartyMember.builder()
                 .nickname(requestDto.getNickname())
                 .order(requestDto.getOrder())
                 .build();
-
         try {
             partyRepository.memberJoin(partyMember, requestDto.getPartyId());
-        }catch(Exception e) {
+        } catch (Exception e) {
             throw new Exception("Party doesn't exist");
         }
+
+
     }
 
     @Override
@@ -81,7 +91,36 @@ public class PartyServiceImpl implements PartyService{
     }
 
     @Override
-    public List<PartyListResponseDto> getPartyListByLocation(PartyLocationRequestDto requestDto) {
+    public PartyInfoResponseDto getPartyInfoById(Long partyId) throws Exception {
+
+        Optional<Party> party = partyRepository.findById(partyId);
+        if (party.isEmpty()) throw new Exception("No content");
+
+        Party p = party.get();
+        Restaurant r = restaurantRepository.findById(p.getRestaurantId());
+
+        List<PartyMemberResponseDto> pmResponseDto = new ArrayList<>();
+
+        for(PartyMember pm : p.getPartyMembers()){
+            pmResponseDto.add(new PartyMemberResponseDto(pm.getPartyMemberId(), pm.getNickname(), pm.getOrder()));
+        }
+
+        return PartyInfoResponseDto.builder()
+                .partyName(p.getPartyName())
+                .host(p.getHost())
+                .pickUpAddress(p.getPickUpAddress())
+                .memberNum(p.getMemberNum())
+                .latitude(p.getLatitude())
+                .longitude(p.getLongitude())
+                .partyMembers(pmResponseDto)
+                .restaurantName(r.getName())
+                .category(r.getCategory())
+                .deliveryFee(r.getDeliveryFee())
+                .build();
+    }
+
+    @Override
+    public List<PartyListResponseDto> getPartyListByLocation(PartyListRequestDto requestDto) {
         List<PartyListResponseDto> responseDtoList = new ArrayList<>();
         List<Party> partyList = partyRepository.findAll();
         log.info("party 방의 개수: " + partyList.size());

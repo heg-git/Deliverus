@@ -5,8 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class RestaurantInfoRequestDto {
+public class PartyInfoRequestDto {
 
-    private Long restaurantId;
-
+    private Long partyId;
 }

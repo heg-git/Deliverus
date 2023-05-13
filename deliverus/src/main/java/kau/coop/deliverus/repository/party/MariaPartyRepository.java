@@ -49,6 +49,19 @@ public class MariaPartyRepository implements PartyRepository{
     }
 
     @Override
+    public Optional<PartyMember> deleteMember(String nickname) {
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Party> findById(Long partyId) {
+        Party party = em.find(Party.class, partyId);
+        if(party != null) return Optional.of(party);
+        else return Optional.empty();
+    }
+
+    @Override
     public Optional<Party> delete(Long partyId) {
         Party party = em.find(Party.class, partyId);
         if(party != null) {
