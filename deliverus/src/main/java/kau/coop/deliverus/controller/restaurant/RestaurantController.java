@@ -71,7 +71,7 @@ public class RestaurantController {
 //            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 //        }
 
-        RestaurantInfoResponseDto result = restaurantService.getRestaurantInfo(requestDto.getRestaurant_id());
+        RestaurantInfoResponseDto result = restaurantService.getRestaurantInfo(requestDto.getRestaurantId());
         if(result != null) {
             return ResponseEntity.ok(result);
         }

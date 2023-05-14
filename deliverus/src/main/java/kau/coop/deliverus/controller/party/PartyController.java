@@ -1,8 +1,10 @@
 package kau.coop.deliverus.controller.party;
 
 import kau.coop.deliverus.domain.dto.request.PartyCreateRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyLocationRequestDto;
+import kau.coop.deliverus.domain.dto.request.PartyInfoRequestDto;
+import kau.coop.deliverus.domain.dto.request.PartyListRequestDto;
 import kau.coop.deliverus.domain.dto.request.PartyMemberRequestDto;
+import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyListResponseDto;
 import kau.coop.deliverus.service.party.PartyService;
 import lombok.RequiredArgsConstructor;
@@ -32,20 +34,31 @@ public class PartyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //파티방 삭제 api 삭제 성공시 200 삭제할 파티방이 없는 경우 406
+    //파티방 삭제 api 삭제 성공시 200 삭제할 파티방이 없는 경우 204
     @DeleteMapping("api/party/{id}")
-    public ResponseEntity<String> deleteParty(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteParty(@PathVariable("id") Long partyId){
         try {
-            partyService.deleteParty(id);
+            partyService.deleteParty(partyId);
             return new ResponseEntity<>("Delete success", HttpStatus.OK);
         }catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NO_CONTENT);
         }
     }
 
+    //파티방 정보 api 성공시 200 방 id 오류시 204
+    @GetMapping("api/party")
+    public ResponseEntity<PartyInfoResponseDto> getPartyInfo(@RequestParam("partyId") Long partyId){
+        try {
+            PartyInfoResponseDto responseDto = partyService.getPartyInfoById(partyId);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
     //사용자의 위치에 따른 필터링된 파티방 정보들을 전송하는 api 성공시 200 정보가 없으면 204
     @PostMapping("api/party/location")
-    public ResponseEntity<List<PartyListResponseDto>> getPartyList(@RequestBody PartyLocationRequestDto requestDto){
+    public ResponseEntity<List<PartyListResponseDto>> getPartyList(@RequestBody PartyListRequestDto requestDto){
         List<PartyListResponseDto> results = partyService.getPartyListByLocation(requestDto);
         if (!results.isEmpty()) return new ResponseEntity<>(results, HttpStatus.OK);
         else return new ResponseEntity<>(results, HttpStatus.NO_CONTENT);
@@ -62,9 +75,11 @@ public class PartyController {
         }
     }
 
-    //파티방 멤버 삭제 api
-    //@DeleteMapping("api/party/member/{nickname}")
-
+    //파티방 멤버 삭제 api 성공시 200 해당 멤버가 없으면 204
+//    @DeleteMapping("api/party/member/{nickname}")
+//    public ResponseEntity<String> deleteMember(@PathVariable("nickname") Long nickname){
+//
+//    }
 
     //사용자의 파티방 참여 여부를 알려주는 api 없으면 200, 있으면 406
     @GetMapping("api/party/validation")
