@@ -7,6 +7,7 @@ import kau.coop.deliverus.domain.entity.PartyMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,13 +63,17 @@ public class MariaPartyRepository implements PartyRepository{
     }
 
     @Override
+    @Transactional
     public Optional<Party> delete(Long partyId) {
         Party party = em.find(Party.class, partyId);
         if(party != null) {
             em.remove(party);
+            log.info("party 제거 완료!" +party.getPartyId().toString() );
             return Optional.of(party);
         }
-        else return Optional.empty();
+        else {
+            log.info("삭제할 것 없음");
+            return Optional.empty();
+        }
     }
-
 }

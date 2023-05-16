@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,8 @@ public class PartyServiceImpl implements PartyService{
 
     private final PartyRepository partyRepository;
     private final RestaurantRepository restaurantRepository;
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
     private static final Double R = 6371.0;
 
     @Override
@@ -55,12 +60,18 @@ public class PartyServiceImpl implements PartyService{
                 .build();
 
         partyRepository.join(party, partyMember);
-
+        DeleteTask deleteTask = new DeleteTask(party.getPartyId(), this);
+        executorService.schedule(deleteTask, party.getExpireTime(), TimeUnit.MINUTES);
+        log.info(deleteTask.getPartyId().toString()+"번 파티방은 "+ party.getExpireTime()  +"분 뒤에 삭제");
     }
+
 
     @Override
     public void deleteParty(Long partyId) throws Exception{
-        if(partyRepository.delete(partyId).isEmpty()) throw new Exception("No content to delete");
+        if(partyRepository.delete(partyId).isEmpty()) {
+            log.info("service 삭제할 것 없음");
+            throw new Exception("No content to delete");
+        }
     }
 
     @Override
@@ -81,8 +92,6 @@ public class PartyServiceImpl implements PartyService{
         } catch (Exception e) {
             throw new Exception("Party doesn't exist");
         }
-
-
     }
 
     @Override

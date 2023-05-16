@@ -1,7 +1,6 @@
 package kau.coop.deliverus.controller.party;
 
 import kau.coop.deliverus.domain.dto.request.PartyCreateRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyInfoRequestDto;
 import kau.coop.deliverus.domain.dto.request.PartyListRequestDto;
 import kau.coop.deliverus.domain.dto.request.PartyMemberRequestDto;
 import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
@@ -24,14 +23,15 @@ public class PartyController {
 
     //파티방 생성 api
     @PostMapping("api/party")
-    public ResponseEntity<Void> createParty(@RequestBody PartyCreateRequestDto requestDto) {
+    public ResponseEntity<String> createParty(@RequestBody PartyCreateRequestDto requestDto) {
+        log.info(requestDto.toString());
         //세션 검증
 //        HttpSession session = request.getSession(false);
 //        if(session == null) {
 //            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 //        }
         partyService.createParty(requestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("생성 성공",HttpStatus.OK);
     }
 
     //파티방 삭제 api 삭제 성공시 200 삭제할 파티방이 없는 경우 204
