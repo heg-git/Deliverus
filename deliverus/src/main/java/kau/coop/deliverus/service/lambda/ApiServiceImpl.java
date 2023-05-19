@@ -58,7 +58,6 @@ public class ApiServiceImpl implements ApiService {
 
         date = now.getYear() + month + now.getDayOfMonth();
         wamisUrl = "http://www.wamis.go.kr:8080/wamis/openapi/wkw/we_hrdata?obscd=10181108&startdt=" + date + "&enddt=" + date;
-        System.out.println("wamisUrl = " + wamisUrl);
         wamisDayUrl = "http://www.wamis.go.kr:8080/wamis/openapi/wkw/we_dtdata?obscd=10181108&startdt=" + yesterday + "&enddt=" + yesterday;
         holidayApiUrl = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?ServiceKey=" + holidayApiKey + "&solYear=2023&solMonth=" + month;
         dustApiUrl = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=" + dustApiKey + "&returnType=json&sidoName=" + region + "&searchDate=" + now + "&numOfRows=" + 40;
