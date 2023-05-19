@@ -18,6 +18,8 @@ public class PartyListResponseDto {
     private Double latitude;
     private Double longitude;
     private Long expireTime;
+    private Long restaurantId;
+    //restaurantId 추가
     private String restaurantName;
     private String category;
     private Long deliveryFee;
