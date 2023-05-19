@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-//@EnableScheduling
+@EnableScheduling
 public class DeliverusApplication {
 
 	public static void main(String[] args) {
