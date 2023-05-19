@@ -54,7 +54,7 @@ public class RestaurantController {
         log.info("사용자 위도 : " + requestDto.getLatitude() + " / 경도 : " + requestDto.getLongitude());
 
         //request에 따라서 결과를 전달합니다.
-        List<RestaurantListResponseDto> results = restaurantService.getRestaurantList();
+        List<RestaurantListResponseDto> results = restaurantService.getRestaurantListByLocation(requestDto);
         if(!results.isEmpty()) {
             return ResponseEntity.ok(results);
         }

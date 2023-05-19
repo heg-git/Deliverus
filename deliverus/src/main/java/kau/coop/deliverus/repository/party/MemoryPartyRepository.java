@@ -14,6 +14,11 @@ public class MemoryPartyRepository implements PartyRepository{
     }
 
     @Override
+    public List<Party> findByRestaurant(Long restaurantId) {
+        return null;
+    }
+
+    @Override
     public void join(Party party, PartyMember partyMember) {
 
     }
@@ -29,8 +34,8 @@ public class MemoryPartyRepository implements PartyRepository{
     }
 
     @Override
-    public Optional<PartyMember> deleteMember(String nickname) {
-        return Optional.empty();
+    public void deleteMember(PartyMember partyMember) {
+
     }
 
     @Override

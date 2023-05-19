@@ -1,5 +1,6 @@
 package kau.coop.deliverus.service.restaurant;
 
+import kau.coop.deliverus.domain.dto.request.RestaurantListRequestDto;
 import kau.coop.deliverus.domain.dto.response.RestaurantListResponseDto;
 import kau.coop.deliverus.domain.dto.response.RestaurantInfoResponseDto;
 
@@ -10,6 +11,9 @@ public interface RestaurantService {
     RestaurantInfoResponseDto getRestaurantInfo(Long id);
 
     List<RestaurantListResponseDto> getRestaurantList();
+
+
+    List<RestaurantListResponseDto> getRestaurantListByLocation(RestaurantListRequestDto requestDto);
 
     List<RestaurantInfoResponseDto> getAll();
 }

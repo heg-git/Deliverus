@@ -15,9 +15,11 @@ public interface PartyRepository {
 
     List<Party> findAll();
 
+    List<Party> findByRestaurant(Long restaurantId);
+
     Optional<PartyMember> findByNickname(String nickname);
 
-    Optional<PartyMember> deleteMember(String nickname);
+    void deleteMember(PartyMember partyMember);
 
     Optional<Party> findById(Long partyId);
 
