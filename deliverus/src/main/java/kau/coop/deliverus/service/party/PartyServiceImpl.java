@@ -3,6 +3,7 @@ package kau.coop.deliverus.service.party;
 import kau.coop.deliverus.domain.dto.request.PartyCreateRequestDto;
 import kau.coop.deliverus.domain.dto.request.PartyListRequestDto;
 import kau.coop.deliverus.domain.dto.request.PartyMemberRequestDto;
+import kau.coop.deliverus.domain.dto.request.PartyRestaurantRequestDto;
 import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyListResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyMemberResponseDto;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,8 +38,9 @@ public class PartyServiceImpl implements PartyService{
     private static final Double R = 6371.0;
 
     @Override
-    public void createParty(PartyCreateRequestDto requestDto) {
+    public void createParty(PartyCreateRequestDto requestDto) throws Exception {
 
+        if (partyRepository.findByNickname(requestDto.getHost()).isPresent()) throw new Exception("Joined party already exist");
         List<PartyMember> partyMembers = new ArrayList<>();
 
         PartyMember partyMember = PartyMember.builder()
@@ -77,26 +80,49 @@ public class PartyServiceImpl implements PartyService{
     @Override
     public void participateParty(PartyMemberRequestDto requestDto) throws Exception {
 
-        Party party = partyRepository.findById(requestDto.getPartyId()).get();
+        Optional<Party> partyOptional = partyRepository.findById(requestDto.getPartyId());
+        if (partyOptional.isEmpty()) throw new Exception("Party doesn't exist");
+
+        Party party = partyOptional.get();
         if (party.getPartyMembers().size() >= party.getMemberNum()) {
             log.info("party 꽉참");
             throw new Exception("Party is full");
+        }
+
+        Optional<PartyMember> partyMemberOptional = partyRepository.findByNickname(requestDto.getNickname());
+        if (partyMemberOptional.isPresent()){
+            log.info("파티에 이미 참여");
+            throw new Exception("Joined party already exist");
         }
 
         PartyMember partyMember = PartyMember.builder()
                 .nickname(requestDto.getNickname())
                 .order(requestDto.getOrder())
                 .build();
-        try {
-            partyRepository.memberJoin(partyMember, requestDto.getPartyId());
-        } catch (Exception e) {
-            throw new Exception("Party doesn't exist");
-        }
+        partyRepository.memberJoin(partyMember, requestDto.getPartyId());
+
     }
 
     @Override
-    public void getPartyExistenceByNickname(String nickname) throws Exception {
-        if(partyRepository.findByNickname(nickname).isPresent()) throw new Exception("Joined party already exist");
+    public Party leaveParty(String nickname) throws Exception{
+        Optional<PartyMember> partyMember = partyRepository.findByNickname(nickname);
+        //log.info(partyMember.get().getPartyMemberId().toString());
+        if(partyMember.isEmpty()) {
+            log.info("해당 멤버 없음!");
+            throw new Exception("Doesn't exist anywhere");
+        }
+
+        PartyMember pm = partyMember.get();
+        partyRepository.deleteMember(pm);
+        return pm.getParty();
+
+    }
+
+    @Override
+    public Long getPartyExistenceByNickname(String nickname) throws Exception {
+        Optional<PartyMember>  partyMember = partyRepository.findByNickname(nickname);
+        if(partyMember.isEmpty()) throw new Exception();
+        return partyMember.get().getParty().getPartyId();
     }
 
     @Override
@@ -129,6 +155,38 @@ public class PartyServiceImpl implements PartyService{
     }
 
     @Override
+    public List<PartyListResponseDto> getPartyListByRestaurant(PartyRestaurantRequestDto requestDto) throws Exception{
+        List<PartyListResponseDto> responseDtoList = new ArrayList<>();
+        List<Party> partyList = partyRepository.findByRestaurant(requestDto.getId());
+        Restaurant r = restaurantRepository.findById(requestDto.getId());
+
+        if(partyList.isEmpty()) throw new Exception("No Party");
+
+        for(Party p : partyList){
+            double distance = haversine(requestDto.getLatitude(), requestDto.getLongitude(), p.getLatitude(), p.getLongitude()) * 1000;
+            responseDtoList.add(
+                    PartyListResponseDto.builder()
+                            .partyId(p.getPartyId())
+                            .partyName(p.getPartyName())
+                            .host(p.getHost())
+                            .pickUpAddress(p.getPickUpAddress())
+                            .memberNum(p.getMemberNum())
+                            .currentMemberNum((long)p.getPartyMembers().size())
+                            .distance(distance)
+                            .latitude(p.getLatitude())
+                            .longitude(p.getLongitude())
+                            .expireTime(p.getExpireTime())
+                            .restaurantId(r.getRestaurantId())
+                            .restaurantName(r.getName())
+                            .category(r.getCategory())
+                            .deliveryFee(r.getDeliveryFee())
+                            .build()
+            );
+        }
+        return responseDtoList;
+    }
+
+    @Override
     public List<PartyListResponseDto> getPartyListByLocation(PartyListRequestDto requestDto) {
         List<PartyListResponseDto> responseDtoList = new ArrayList<>();
         List<Party> partyList = partyRepository.findAll();
@@ -150,6 +208,7 @@ public class PartyServiceImpl implements PartyService{
                                 .longitude(p.getLongitude())
                                 .expireTime(p.getExpireTime())
                                 .pickUpAddress(p.getPickUpAddress())
+                                .restaurantId(p.getRestaurantId())
                                 .restaurantName(r.getName())
                                 .category(r.getCategory())
                                 .deliveryFee(r.getDeliveryFee())

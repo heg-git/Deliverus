@@ -2,6 +2,7 @@ package kau.coop.deliverus.repository.party;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
 import kau.coop.deliverus.domain.entity.Party;
 import kau.coop.deliverus.domain.entity.PartyMember;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,13 @@ public class MariaPartyRepository implements PartyRepository{
     }
 
     @Override
+    public List<Party> findByRestaurant(Long restaurantId) {
+        return em.createQuery("select p from Party p where p.restaurantId=:restaurantId", Party.class)
+                .setParameter("restaurantId", restaurantId)
+                .getResultList();
+    }
+
+    @Override
     public void join(Party party, PartyMember partyMember) {
         party.addPartyMember(partyMember);
         em.persist(party);
@@ -44,15 +52,15 @@ public class MariaPartyRepository implements PartyRepository{
             return Optional.of(em.createQuery("select pm from PartyMember pm where pm.nickname=:nickname", PartyMember.class)
                     .setParameter("nickname", nickname)
                     .getSingleResult());
-        } catch(NoResultException noResultException){
+        } catch(NoResultException | NonUniqueResultException e){
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<PartyMember> deleteMember(String nickname) {
-
-        return Optional.empty();
+    public void deleteMember(PartyMember partyMember) {
+        em.remove(partyMember);
+        log.info(partyMember.getNickname()+"은 삭제되었다!");
     }
 
     @Override
