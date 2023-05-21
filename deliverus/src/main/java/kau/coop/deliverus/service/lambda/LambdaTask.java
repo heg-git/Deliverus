@@ -25,7 +25,8 @@ public class LambdaTask {
         // call REST api (lambda function)
 
         //update DB
-        Top5 top5 = new Top5("1등", "2등", "3등", "4등", "5등");
+        // "한식", "분식", "치킨", "아시안/양식", "족발/보쌈", "돈까스/일식", "카페/디저트", "찜탕", "패스트푸드", "피자"
+        Top5 top5 = new Top5("한식", "분식", "치킨", "아시안/양식", "족발/보쌈");
         repository.update(top5);
 
     }
