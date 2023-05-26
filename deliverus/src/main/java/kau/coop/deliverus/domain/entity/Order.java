@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 public class Order {
 
-    private String name;
+    private String menuName;
     private Long price;
     private Long num;
 

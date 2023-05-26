@@ -24,6 +24,6 @@ public class PartyInfoResponseDto {
     private String restaurantName;
     private String category;
     private Long deliveryFee;
-
+    private Long minOrderPrice;
 
 }

@@ -28,6 +28,17 @@ public class Party {
     @OneToMany(mappedBy="party", cascade = CascadeType.ALL)
     private List<PartyMember> partyMembers;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "chatMessage",
+            joinColumns = @JoinColumn(name = "chatId")
+    )
+    private List<ChatMessage> chatMessages;
+
+    public void addChatMessage(ChatMessage chatMessage){
+        this.chatMessages.add(chatMessage);
+    }
+
     public void addPartyMember(PartyMember partyMember){
         this.partyMembers.add(partyMember);
         partyMember.setParty(this);
