@@ -14,10 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 @Service
 @Slf4j
 public class ApiServiceImpl implements ApiService {
 
+
+    private static final String DEFAULT_DAY_OF_WEEK = "1";
+    private static final String DEFAULT_IS_HOLIDAY = "0";
+    private static final String DEFAULT_TIME = "1";
+    private static final String DEFAULT_SEASON = "1";
+    private static final String DEFAULT_FEELS_LIKE_TMP = "25";
+    private static final String DEFAULT_DISCOMFORT_IDX = "1";
+    private static final String DEFAULT_WIND_SPEED = "1";
+    private static final String DEFAULT_SUNSHINE = "1";
+    private static final String DEFAULT_CLOUD = "0";
+    private static final String DEFAULT_HUMIDITY = "50";
+    private static final String DEFAULT_RAIN = "0";
+    private static final String DEFAULT_DUST = "1";
     private String date;
 
     // openweathermap api
@@ -201,22 +215,25 @@ public class ApiServiceImpl implements ApiService {
                 }
             }
 
+            // 마지막으로 null이 들어갔는지 확인하고, null이라면 해당 property에 default 값을 넣어줍니다.
+            nullCheck(lambdaSchema);
+
             return lambdaSchema;
         } catch (Exception e) {
             log.info("api 오류 : " + e);
             log.info("default schema return..");
-            lambdaSchema.setDayOfWeek("1");
-            lambdaSchema.setIsHoliday("0");
-            lambdaSchema.setTime("1");
-            lambdaSchema.setSeason("1");
-            lambdaSchema.setFeelsLikeTmp("28");
-            lambdaSchema.setDiscomfortIdx("1");
-            lambdaSchema.setWindSpeed("1.0");
-            lambdaSchema.setSunshine("1.0");
-            lambdaSchema.setCloud("1.0");
-            lambdaSchema.setHumidity("50");
-            lambdaSchema.setRain("0");
-            lambdaSchema.setDust("1");
+            lambdaSchema.setDayOfWeek(DEFAULT_DAY_OF_WEEK);
+            lambdaSchema.setIsHoliday(DEFAULT_IS_HOLIDAY);
+            lambdaSchema.setTime(DEFAULT_TIME);
+            lambdaSchema.setSeason(DEFAULT_SEASON);
+            lambdaSchema.setFeelsLikeTmp(DEFAULT_FEELS_LIKE_TMP);
+            lambdaSchema.setDiscomfortIdx(DEFAULT_DISCOMFORT_IDX);
+            lambdaSchema.setWindSpeed(DEFAULT_WIND_SPEED);
+            lambdaSchema.setSunshine(DEFAULT_SUNSHINE);
+            lambdaSchema.setCloud(DEFAULT_CLOUD);
+            lambdaSchema.setHumidity(DEFAULT_HUMIDITY);
+            lambdaSchema.setRain(DEFAULT_RAIN);
+            lambdaSchema.setDust(DEFAULT_DUST);
             return lambdaSchema;
         }
     }
@@ -271,7 +288,7 @@ public class ApiServiceImpl implements ApiService {
 
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("get wamis api에서 error : " + e.getMessage());
         }
         return null;
     }
@@ -289,7 +306,7 @@ public class ApiServiceImpl implements ApiService {
             }
             return info.getSsavg();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("get wamis day api에서 error : " + e.getMessage());
         }
         return null;
     }
@@ -305,7 +322,7 @@ public class ApiServiceImpl implements ApiService {
 
             return item.getPm10Value();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("get dust api에서 error : " + e.getMessage());
         }
         return null;
     }
@@ -327,7 +344,7 @@ public class ApiServiceImpl implements ApiService {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("get holiday api에서 error : " + e.getMessage());
         }
         return null;
     }
@@ -335,5 +352,20 @@ public class ApiServiceImpl implements ApiService {
     private String getDiscomfortIndex(Double temperature, Double humidity) {
         // 불쾌지수=1.8x기온–0.55x(1–습도)x(1.8x기온–26)+32
         return Double.toString(1.8 * temperature - 0.55 * (1 - humidity) * (1.8 * temperature - 26) + 32);
+    }
+
+    private void nullCheck(LambdaSchema ls) {
+        if(ls.getDust() == null) ls.setDust(DEFAULT_DUST);
+        if(ls.getHumidity() == null) ls.setHumidity(DEFAULT_HUMIDITY);
+        if(ls.getCloud() == null) ls.setCloud(DEFAULT_CLOUD);
+        if(ls.getSunshine() == null) ls.setSunshine(DEFAULT_SUNSHINE);
+        if(ls.getTime() == null) ls.setTime(DEFAULT_TIME);
+        if(ls.getSeason() == null) ls.setSeason(DEFAULT_SEASON);
+        if(ls.getRain() == null) ls.setRain(DEFAULT_RAIN);
+        if(ls.getFeelsLikeTmp() == null) ls.setFeelsLikeTmp(DEFAULT_FEELS_LIKE_TMP);
+        if(ls.getDiscomfortIdx() == null) ls.setDiscomfortIdx(DEFAULT_DISCOMFORT_IDX);
+        if(ls.getIsHoliday() == null) ls.setIsHoliday(DEFAULT_IS_HOLIDAY);
+        if(ls.getDayOfWeek() == null) ls.setDayOfWeek(DEFAULT_DAY_OF_WEEK);
+        if(ls.getWindSpeed() == null) ls.setWindSpeed(DEFAULT_WIND_SPEED);
     }
 }
