@@ -65,6 +65,7 @@ public class PartyController {
         }
     }
 
+    //해당 식당으로 만들어진 파티방 리스트 없으면 204
     @PostMapping("api/party/restaurant")
     public ResponseEntity<List<PartyListResponseDto>> getPartyList(@RequestBody PartyRestaurantRequestDto requestDto){
         try {
@@ -111,12 +112,16 @@ public class PartyController {
     @GetMapping("api/party/id")
     public ResponseEntity<Long> validate(@RequestParam("name") String nickname){
         try {
-            log.info("왔음  " + nickname);
             Long partyId = partyService.getPartyExistenceByNickname(nickname);
             return new ResponseEntity<>(partyId, HttpStatus.OK);
         } catch(Exception e) {
             return new ResponseEntity<>(-1L, HttpStatus.OK);
         }
+    }
+
+    @PutMapping("api/party/member/{name}")
+    public ResponseEntity<String> modifyMember(){
+        return null;
     }
 
 }
