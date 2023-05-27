@@ -1,9 +1,6 @@
 package kau.coop.deliverus.service.party;
 
-import kau.coop.deliverus.domain.dto.request.PartyCreateRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyListRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyMemberRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyRestaurantRequestDto;
+import kau.coop.deliverus.domain.dto.request.*;
 import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyListResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyMemberResponseDto;
@@ -57,21 +54,21 @@ public class PartyServiceImpl implements PartyService{
                 .memberNum(requestDto.getMemberNum())
                 .latitude(requestDto.getLatitude())
                 .longitude(requestDto.getLongitude())
+                .life(requestDto.getLife())
                 .expireTime(requestDto.getExpireTime())
                 .partyMembers(partyMembers)
                 .build();
 
         partyRepository.join(party, partyMember);
         DeleteTask deleteTask = new DeleteTask(party.getPartyId(), this);
-        executorService.schedule(deleteTask, party.getExpireTime(), TimeUnit.MINUTES);
-        log.info(deleteTask.getPartyId().toString()+"번 파티방은 "+ party.getExpireTime()  +"분 뒤에 삭제");
+        executorService.schedule(deleteTask, party.getLife()+60L, TimeUnit.MINUTES);
+        log.info(deleteTask.getPartyId().toString()+"번 파티방은 "+ party.getLife()+60L  +"분 뒤에 삭제");
     }
 
 
     @Override
     public void deleteParty(Long partyId) throws Exception{
         if(partyRepository.delete(partyId).isEmpty()) {
-            log.info("service 삭제할 것 없음");
             throw new Exception("No content to delete");
         }
     }
@@ -89,7 +86,7 @@ public class PartyServiceImpl implements PartyService{
         }
 
         Optional<PartyMember> partyMemberOptional = partyRepository.findByNickname(requestDto.getNickname());
-        if (partyMemberOptional.isPresent()){
+        if (partyMemberOptional.isPresent() | requestDto.getNickname().equals(party.getHost())){
             log.info("파티에 이미 참여");
             throw new Exception("Joined party already exist");
         }
@@ -105,12 +102,10 @@ public class PartyServiceImpl implements PartyService{
     @Override
     public Party leaveParty(String nickname) throws Exception{
         Optional<PartyMember> partyMember = partyRepository.findByNickname(nickname);
-        //log.info(partyMember.get().getPartyMemberId().toString());
         if(partyMember.isEmpty()) {
             log.info("해당 멤버 없음!");
             throw new Exception("Doesn't exist anywhere");
         }
-
         PartyMember pm = partyMember.get();
         partyRepository.deleteMember(pm);
         return pm.getParty();
@@ -147,9 +142,11 @@ public class PartyServiceImpl implements PartyService{
                 .latitude(p.getLatitude())
                 .longitude(p.getLongitude())
                 .partyMembers(pmResponseDto)
+                .restaurantId(r.getRestaurantId())
                 .restaurantName(r.getName())
                 .category(r.getCategory())
                 .deliveryFee(r.getDeliveryFee())
+                .minOrderPrice(r.getMinOrderPrice())
                 .build();
     }
 
@@ -216,6 +213,15 @@ public class PartyServiceImpl implements PartyService{
         }
         log.info("남의 party 방의 개수: " + responseDtoList.size());
         return responseDtoList;
+    }
+
+    @Override
+    public void changeOrder(String nickname, PartyMemberOrderRequestDto requestDto) throws Exception {
+        Optional<PartyMember> partyMemberOptional = partyRepository.findByNickname(nickname);
+        if(partyMemberOptional.isEmpty()) throw new Exception("He or she is not a member");
+        PartyMember partyMember = partyMemberOptional.get();
+        partyMember.setOrder(requestDto.getOrder());
+        partyRepository.memberJoin(partyMember, partyMember.getParty().getPartyId());
     }
 
     public Double haversine(Double lat1, Double lon1, Double lat2, Double lon2) {

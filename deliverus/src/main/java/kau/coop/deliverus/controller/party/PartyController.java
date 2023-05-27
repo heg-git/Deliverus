@@ -1,9 +1,6 @@
 package kau.coop.deliverus.controller.party;
 
-import kau.coop.deliverus.domain.dto.request.PartyCreateRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyListRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyMemberRequestDto;
-import kau.coop.deliverus.domain.dto.request.PartyRestaurantRequestDto;
+import kau.coop.deliverus.domain.dto.request.*;
 import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyListResponseDto;
 import kau.coop.deliverus.domain.entity.Party;
@@ -100,7 +97,7 @@ public class PartyController {
     public ResponseEntity<String> deleteMember(@PathVariable("name") String nickname) {
         try {
             Party p = partyService.leaveParty(nickname);
-            if(p.getPartyMembers().isEmpty()) partyService.deleteParty(p.getPartyId());
+            if(p.getPartyMembers().isEmpty() | nickname.equals(p.getHost())) partyService.deleteParty(p.getPartyId());
             return new ResponseEntity<>("Member delete success",HttpStatus.OK);
          } catch(Exception e) {
             log.info(e.getMessage());
@@ -119,9 +116,15 @@ public class PartyController {
         }
     }
 
-    @PutMapping("api/party/member/{name}")
-    public ResponseEntity<String> modifyMember(){
-        return null;
+    //사용자가 파티방에서 메뉴 주문을 변경하는 api
+    @PutMapping("api/party/order/{name}")
+    public ResponseEntity<String> changeOrder(@PathVariable("name") String nickname, @RequestBody PartyMemberOrderRequestDto requestDto){
+        try{
+            partyService.changeOrder(nickname, requestDto);
+            return new ResponseEntity<>("Change success!",HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NO_CONTENT);
+        }
     }
 
 }

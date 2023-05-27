@@ -2,6 +2,7 @@ package kau.coop.deliverus.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.aspectj.weaver.ast.Or;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -36,4 +37,7 @@ public class PartyMember {
         this.party=party;
     }
 
+    public void setOrder(List<Order> order){
+        this.order=order;
+    }
 }

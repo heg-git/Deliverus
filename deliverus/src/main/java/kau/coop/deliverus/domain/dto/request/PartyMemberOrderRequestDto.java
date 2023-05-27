@@ -7,6 +7,5 @@ import java.util.List;
 
 @Getter
 public class PartyMemberOrderRequestDto {
-
     private List<Order> order;
 }

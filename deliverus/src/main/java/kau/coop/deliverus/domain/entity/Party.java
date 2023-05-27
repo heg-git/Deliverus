@@ -2,6 +2,7 @@ package kau.coop.deliverus.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.List;
 
@@ -23,12 +24,14 @@ public class Party {
     private Long memberNum;
     private Double latitude;
     private Double longitude;
-    private Long expireTime;
+    private Long life;
+    private String expireTime;
 
     @OneToMany(mappedBy="party", cascade = CascadeType.ALL)
     private List<PartyMember> partyMembers;
 
     @ElementCollection
+    @Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     @CollectionTable(
             name = "chatMessage",
             joinColumns = @JoinColumn(name = "chatId")
