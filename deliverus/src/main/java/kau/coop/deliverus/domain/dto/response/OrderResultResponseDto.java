@@ -1,5 +1,6 @@
 package kau.coop.deliverus.domain.dto.response;
 
+import kau.coop.deliverus.domain.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +12,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PartyInfoResponseDto {
+public class OrderResultResponseDto {
 
+    private Long deliverTime;
     private String partyName;
     private String host;
     private String pickUpAddress;
@@ -24,5 +26,4 @@ public class PartyInfoResponseDto {
     private String category;
     private Long deliveryFee;
     private Long minOrderPrice;
-
 }

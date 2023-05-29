@@ -6,7 +6,8 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class PartyMemberOrderRequestDto {
+public class PartyMemberOrderDto {
 
-    private List<Order> order;
+    private Long partyId;
+    private String userId;
 }
