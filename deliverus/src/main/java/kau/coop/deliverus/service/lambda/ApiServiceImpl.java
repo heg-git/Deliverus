@@ -191,7 +191,7 @@ public class ApiServiceImpl implements ApiService {
                 lambdaSchema.setRain("0");
             }
             else {
-                if (Float.parseFloat(weatherApi.get(0)) > 0.5f) {
+                if (Float.parseFloat(weatherApi.get(0)) > 0.0f) {
                     lambdaSchema.setRain("1");
                 } else {
                     lambdaSchema.setRain("0");
