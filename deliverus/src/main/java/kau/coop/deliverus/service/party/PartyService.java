@@ -27,4 +27,6 @@ public interface PartyService {
 
     void changeOrder(String nickname, PartyMemberOrderRequestDto requestDto) throws Exception;
 
+    Long queryState(Long partyId) throws Exception;
+
 }

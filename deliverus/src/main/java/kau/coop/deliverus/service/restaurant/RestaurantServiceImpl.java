@@ -42,6 +42,8 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .intro(restaurantInfo.getRestaurantIntro())
                 .latitude(restaurantInfo.getLatitude())
                 .longitude(restaurantInfo.getLongitude())
+                .deliveryFee(restaurantInfo.getDeliveryFee())
+                .minOrderPrice(restaurantInfo.getMinOrderPrice())
                 .build();
     }
 
