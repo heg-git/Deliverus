@@ -84,4 +84,26 @@ public class MariaPartyRepository implements PartyRepository{
             return Optional.empty();
         }
     }
+
+    @Override
+    public Optional<PartyMember> updateMemberPayed(PartyMember partyMember) {
+        PartyMember pm = em.createQuery("select pm from PartyMember pm where pm.nickname=:nickname", PartyMember.class)
+                .setParameter("nickname", partyMember.getNickname())
+                .getSingleResult();
+
+        pm.setPayed(true);
+        em.merge(pm);
+        return Optional.of(pm);
+    }
+
+    @Override
+    public Optional<Party> updatePartyState(Long partyId, Long state) {
+        Party p = em.createQuery("select p from Party p where p.id=:id", Party.class)
+                .setParameter("id", partyId)
+                .getSingleResult();
+
+        p.setState(state);
+        em.merge(p);
+        return Optional.of(p);
+    }
 }

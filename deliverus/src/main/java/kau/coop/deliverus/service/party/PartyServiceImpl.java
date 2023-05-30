@@ -35,6 +35,7 @@ public class PartyServiceImpl implements PartyService{
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     private static final Double R = 6371.0;
+    private static final Long DEFAULT_DELIVER_TIME = 30L;
 
     @Override
     public void createParty(PartyCreateRequestDto requestDto) throws Exception {
@@ -59,6 +60,7 @@ public class PartyServiceImpl implements PartyService{
                 .longitude(requestDto.getLongitude())
                 .expireTime(requestDto.getExpireTime())
                 .partyMembers(partyMembers)
+                .deliverTime(DEFAULT_DELIVER_TIME)
                 .build();
 
         partyRepository.join(party, partyMember);

@@ -25,4 +25,7 @@ public interface PartyRepository {
 
     Optional<Party> delete(Long partyId);
 
+    Optional<PartyMember> updateMemberPayed(PartyMember partyMember);
+    Optional<Party> updatePartyState(Long partyId, Long state);
+
 }

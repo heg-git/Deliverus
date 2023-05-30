@@ -9,5 +9,5 @@ import java.util.List;
 public class PartyMemberOrderDto {
 
     private Long partyId;
-    private String userId;
+    private String nickname;
 }

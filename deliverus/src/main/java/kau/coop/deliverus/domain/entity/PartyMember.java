@@ -32,6 +32,12 @@ public class PartyMember {
     )
     private List<Order> order;
 
+    private boolean isPayed;
+
+    public void setPayed(boolean payed) {
+        isPayed = payed;
+    }
+
     public void setParty(Party party){
         this.party=party;
     }
