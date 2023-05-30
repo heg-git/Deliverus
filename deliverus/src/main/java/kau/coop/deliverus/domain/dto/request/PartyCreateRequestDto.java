@@ -18,7 +18,8 @@ public class PartyCreateRequestDto {
     private Double latitude;
     private Double longitude;
     private Long restaurantId;
-    private Long expireTime;
+    private String expireTime;
+    private Long life;
     private String host;
     private List<Order> order;
 

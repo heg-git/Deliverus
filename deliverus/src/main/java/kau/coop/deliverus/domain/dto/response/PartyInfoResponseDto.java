@@ -20,6 +20,7 @@ public class PartyInfoResponseDto {
     private Double latitude;
     private Double longitude;
     private List<PartyMemberResponseDto> partyMembers;
+    private Long restaurantId;
     private String restaurantName;
     private String category;
     private Long deliveryFee;
