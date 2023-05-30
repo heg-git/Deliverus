@@ -37,13 +37,14 @@ public class PartyServiceImpl implements PartyService{
 
     @Override
     public void createParty(PartyCreateRequestDto requestDto) throws Exception {
-
+        log.info(requestDto.getHost());
         if (partyRepository.findByNickname(requestDto.getHost()).isPresent()) throw new Exception("Joined party already exist");
         List<PartyMember> partyMembers = new ArrayList<>();
 
         PartyMember partyMember = PartyMember.builder()
                 .nickname(requestDto.getHost())
                 .order(requestDto.getOrder())
+                .isPayed(false)
                 .build();
 
         partyMembers.add(partyMember);
@@ -65,6 +66,10 @@ public class PartyServiceImpl implements PartyService{
 
         partyRepository.join(party, partyMember);
         DeleteTask deleteTask = new DeleteTask(party.getPartyId(), this);
+        CheckStateTask checkStateTask = new CheckStateTask(party.getState());
+        if(!checkStateTask.getState().equals(PartyState.ORDER_AWAIT)){
+
+        }
         executorService.schedule(deleteTask, party.getLife()+60L, TimeUnit.MINUTES);
         log.info(deleteTask.getPartyId().toString()+"번 파티방은 "+ party.getLife()+60L  +"분 뒤에 삭제");
     }
@@ -98,6 +103,7 @@ public class PartyServiceImpl implements PartyService{
         PartyMember partyMember = PartyMember.builder()
                 .nickname(requestDto.getNickname())
                 .order(requestDto.getOrder())
+                .isPayed(false)
                 .build();
         partyRepository.memberJoin(partyMember, requestDto.getPartyId());
 
@@ -137,7 +143,7 @@ public class PartyServiceImpl implements PartyService{
         for(PartyMember pm : p.getPartyMembers()){
             pmResponseDto.add(new PartyMemberResponseDto(pm.getPartyMemberId(), pm.getNickname(), pm.getOrder()));
         }
-
+        log.info(r.getRestaurantId().toString());
         return PartyInfoResponseDto.builder()
                 .partyName(p.getPartyName())
                 .host(p.getHost())
@@ -146,6 +152,7 @@ public class PartyServiceImpl implements PartyService{
                 .latitude(p.getLatitude())
                 .longitude(p.getLongitude())
                 .partyMembers(pmResponseDto)
+                .expireTime(p.getExpireTime())
                 .restaurantId(r.getRestaurantId())
                 .restaurantName(r.getName())
                 .category(r.getCategory())
@@ -180,6 +187,7 @@ public class PartyServiceImpl implements PartyService{
                             .restaurantName(r.getName())
                             .category(r.getCategory())
                             .deliveryFee(r.getDeliveryFee())
+                            .minOrderPrice(r.getMinOrderPrice())
                             .build()
             );
         }
@@ -212,6 +220,7 @@ public class PartyServiceImpl implements PartyService{
                                 .restaurantName(r.getName())
                                 .category(r.getCategory())
                                 .deliveryFee(r.getDeliveryFee())
+                                .minOrderPrice(r.getMinOrderPrice())
                                 .build());
             }
         }

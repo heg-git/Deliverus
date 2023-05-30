@@ -34,7 +34,7 @@ public class PartyController {
             partyService.createParty(requestDto);
             return new ResponseEntity<>("Create Success", HttpStatus.OK);
         }catch (Exception e) {
-            log.info("이미 참가한 방 있음");
+            log.info("이미 참가한 방 있음" + e.getMessage());
            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
@@ -119,6 +119,7 @@ public class PartyController {
     //사용자가 파티방에서 메뉴 주문을 변경하는 api
     @PutMapping("api/party/order/{name}")
     public ResponseEntity<String> changeOrder(@PathVariable("name") String nickname, @RequestBody PartyMemberOrderRequestDto requestDto){
+        log.info(requestDto.toString());
         try{
             partyService.changeOrder(nickname, requestDto);
             return new ResponseEntity<>("Change success!",HttpStatus.OK);

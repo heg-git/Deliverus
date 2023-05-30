@@ -9,6 +9,5 @@ import java.util.List;
 @ToString
 @Getter
 public class PartyMemberOrderRequestDto {
-
     private List<Order> order;
 }
