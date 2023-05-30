@@ -24,8 +24,10 @@ public class Party {
     private Long memberNum;
     private Double latitude;
     private Double longitude;
-    private Long life;
     private String expireTime;
+    private Long state;
+    private Long deliverTime;
+    private Long life;
 
     @OneToMany(mappedBy="party", cascade = CascadeType.ALL)
     private List<PartyMember> partyMembers;
@@ -47,4 +49,7 @@ public class Party {
         partyMember.setParty(this);
     }
 
+    public void setState(Long state) {
+        this.state = state;
+    }
 }

@@ -7,6 +7,7 @@ import kau.coop.deliverus.domain.dto.response.PartyMemberResponseDto;
 import kau.coop.deliverus.domain.entity.Party;
 import kau.coop.deliverus.domain.entity.PartyMember;
 import kau.coop.deliverus.domain.entity.Restaurant;
+import kau.coop.deliverus.domain.model.PartyState;
 import kau.coop.deliverus.repository.party.PartyRepository;
 import kau.coop.deliverus.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class PartyServiceImpl implements PartyService{
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     private static final Double R = 6371.0;
+    private static final Long DEFAULT_DELIVER_TIME = 30L;
 
     @Override
     public void createParty(PartyCreateRequestDto requestDto) throws Exception {
@@ -57,6 +59,8 @@ public class PartyServiceImpl implements PartyService{
                 .life(requestDto.getLife())
                 .expireTime(requestDto.getExpireTime())
                 .partyMembers(partyMembers)
+                .state(PartyState.ORDER_AWAIT.getState())
+                .deliverTime(DEFAULT_DELIVER_TIME)
                 .build();
 
         partyRepository.join(party, partyMember);

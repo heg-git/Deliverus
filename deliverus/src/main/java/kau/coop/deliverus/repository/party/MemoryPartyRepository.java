@@ -48,4 +48,14 @@ public class MemoryPartyRepository implements PartyRepository{
         return Optional.empty();
     }
 
+    @Override
+    public Optional<PartyMember> updateMemberPayed(PartyMember partyMember) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Party> updatePartyState(Long partyId, Long state) {
+        return Optional.empty();
+    }
+
 }
