@@ -1,10 +1,10 @@
 package kau.coop.deliverus.controller.order;
 
-import kau.coop.deliverus.domain.dto.request.PartyMemberOrderDto;
+import kau.coop.deliverus.domain.dto.request.PartyMemberOrderRequestDto;
+import kau.coop.deliverus.domain.dto.request.PaymentRequestDto;
 import kau.coop.deliverus.domain.dto.response.OrderResultResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
 import kau.coop.deliverus.domain.entity.Order;
-import kau.coop.deliverus.domain.entity.Party;
 import kau.coop.deliverus.domain.entity.PartyMember;
 import kau.coop.deliverus.domain.model.PartyState;
 import kau.coop.deliverus.service.order.OrderService;
@@ -57,7 +57,7 @@ public class OrderController {
 
     // 파티멤버 개인별 주문 접수
     @PostMapping("api/order/payment")
-    public ResponseEntity<List<Order>> payment(@RequestParam("order") PartyMemberOrderDto dto){
+    public ResponseEntity<List<Order>> payment(@RequestParam("order") PaymentRequestDto dto){
         try {
             // 결제 진행 로직
             if(!(orderService.getPartyState(dto.getPartyId()).equals(PartyState.PAYMENT_AWAIT.getState()))) {

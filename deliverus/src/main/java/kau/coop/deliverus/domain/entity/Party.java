@@ -24,7 +24,7 @@ public class Party {
     private Long memberNum;
     private Double latitude;
     private Double longitude;
-    private Long expireTime;
+    private String expireTime;
     private Long state;
     private Long deliverTime;
     private Long life;
