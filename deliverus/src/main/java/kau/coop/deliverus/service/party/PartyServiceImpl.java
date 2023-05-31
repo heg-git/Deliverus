@@ -37,13 +37,13 @@ public class PartyServiceImpl implements PartyService{
 
     @Override
     public void createParty(PartyCreateRequestDto requestDto) throws Exception {
-
         if (partyRepository.findByNickname(requestDto.getHost()).isPresent()) throw new Exception("Joined party already exist");
         List<PartyMember> partyMembers = new ArrayList<>();
 
         PartyMember partyMember = PartyMember.builder()
                 .nickname(requestDto.getHost())
                 .order(requestDto.getOrder())
+                .isPayed(false)
                 .build();
 
         partyMembers.add(partyMember);
@@ -64,9 +64,9 @@ public class PartyServiceImpl implements PartyService{
                 .build();
 
         partyRepository.join(party, partyMember);
-        DeleteTask deleteTask = new DeleteTask(party.getPartyId(), this);
-        executorService.schedule(deleteTask, party.getLife()+60L, TimeUnit.MINUTES);
-        log.info(deleteTask.getPartyId().toString()+"번 파티방은 "+ party.getLife()+60L  +"분 뒤에 삭제");
+
+        CheckStateTask checkStateTask = new CheckStateTask(party, this, partyRepository);
+        executorService.schedule(checkStateTask, party.getLife(), TimeUnit.MINUTES);
     }
 
 
@@ -98,6 +98,7 @@ public class PartyServiceImpl implements PartyService{
         PartyMember partyMember = PartyMember.builder()
                 .nickname(requestDto.getNickname())
                 .order(requestDto.getOrder())
+                .isPayed(false)
                 .build();
         partyRepository.memberJoin(partyMember, requestDto.getPartyId());
 
@@ -137,7 +138,6 @@ public class PartyServiceImpl implements PartyService{
         for(PartyMember pm : p.getPartyMembers()){
             pmResponseDto.add(new PartyMemberResponseDto(pm.getPartyMemberId(), pm.getNickname(), pm.getOrder()));
         }
-
         return PartyInfoResponseDto.builder()
                 .partyName(p.getPartyName())
                 .host(p.getHost())
@@ -146,6 +146,7 @@ public class PartyServiceImpl implements PartyService{
                 .latitude(p.getLatitude())
                 .longitude(p.getLongitude())
                 .partyMembers(pmResponseDto)
+                .expireTime(p.getExpireTime())
                 .restaurantId(r.getRestaurantId())
                 .restaurantName(r.getName())
                 .category(r.getCategory())
@@ -162,26 +163,29 @@ public class PartyServiceImpl implements PartyService{
 
         if(partyList.isEmpty()) throw new Exception("No Party");
 
-        for(Party p : partyList){
+        for(Party p : partyList) {
             double distance = haversine(requestDto.getLatitude(), requestDto.getLongitude(), p.getLatitude(), p.getLongitude()) * 1000;
-            responseDtoList.add(
-                    PartyListResponseDto.builder()
-                            .partyId(p.getPartyId())
-                            .partyName(p.getPartyName())
-                            .host(p.getHost())
-                            .pickUpAddress(p.getPickUpAddress())
-                            .memberNum(p.getMemberNum())
-                            .currentMemberNum((long)p.getPartyMembers().size())
-                            .distance(distance)
-                            .latitude(p.getLatitude())
-                            .longitude(p.getLongitude())
-                            .expireTime(p.getExpireTime())
-                            .restaurantId(r.getRestaurantId())
-                            .restaurantName(r.getName())
-                            .category(r.getCategory())
-                            .deliveryFee(r.getDeliveryFee())
-                            .build()
-            );
+            if (distance <= 1500.0 && p.getState().equals(PartyState.ORDER_AWAIT.getState())) {
+                responseDtoList.add(
+                        PartyListResponseDto.builder()
+                                .partyId(p.getPartyId())
+                                .partyName(p.getPartyName())
+                                .host(p.getHost())
+                                .pickUpAddress(p.getPickUpAddress())
+                                .memberNum(p.getMemberNum())
+                                .currentMemberNum((long) p.getPartyMembers().size())
+                                .distance(distance)
+                                .latitude(p.getLatitude())
+                                .longitude(p.getLongitude())
+                                .expireTime(p.getExpireTime())
+                                .restaurantId(r.getRestaurantId())
+                                .restaurantName(r.getName())
+                                .category(r.getCategory())
+                                .deliveryFee(r.getDeliveryFee())
+                                .minOrderPrice(r.getMinOrderPrice())
+                                .build()
+                );
+            }
         }
         return responseDtoList;
     }
@@ -194,8 +198,7 @@ public class PartyServiceImpl implements PartyService{
         for(Party p : partyList) {
             Restaurant r = restaurantRepository.findById(p.getRestaurantId());
             double distance = haversine(requestDto.getLatitude(), requestDto.getLongitude(), p.getLatitude(), p.getLongitude()) * 1000;
-            log.info("두 위치 사이의 거리는 " + distance);
-            if (distance <= 1500.0) {
+            if (distance <= 1500.0 && p.getState().equals(PartyState.ORDER_AWAIT.getState())) {
                 responseDtoList.add(
                         PartyListResponseDto.builder()
                                 .partyId(p.getPartyId())
@@ -212,10 +215,10 @@ public class PartyServiceImpl implements PartyService{
                                 .restaurantName(r.getName())
                                 .category(r.getCategory())
                                 .deliveryFee(r.getDeliveryFee())
+                                .minOrderPrice(r.getMinOrderPrice())
                                 .build());
             }
         }
-        log.info("남의 party 방의 개수: " + responseDtoList.size());
         return responseDtoList;
     }
 

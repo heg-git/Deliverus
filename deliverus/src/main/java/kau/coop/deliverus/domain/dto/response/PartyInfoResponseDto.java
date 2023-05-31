@@ -21,9 +21,9 @@ public class PartyInfoResponseDto {
     private Double longitude;
     private List<PartyMemberResponseDto> partyMembers;
     private Long restaurantId;
+    private String expireTime;
     private String restaurantName;
     private String category;
     private Long deliveryFee;
     private Long minOrderPrice;
-
 }

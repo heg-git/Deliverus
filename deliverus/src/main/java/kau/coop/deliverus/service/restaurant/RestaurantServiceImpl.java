@@ -63,6 +63,8 @@ public class RestaurantServiceImpl implements RestaurantService{
                     .rating(r.getRating())
                     .intro(r.getRestaurantIntro())
                     .category(r.getCategory())
+                    .deliveryFee(r.getDeliveryFee())
+                    .minOrderPrice(r.getMinOrderPrice())
                     .build();
 
             restaurantDto.add(restaurant);
@@ -85,6 +87,8 @@ public class RestaurantServiceImpl implements RestaurantService{
                         .rating(r.getRating())
                         .intro(r.getRestaurantIntro())
                         .category(r.getCategory())
+                        .deliveryFee(r.getDeliveryFee())
+                        .minOrderPrice(r.getMinOrderPrice())
                         .build();
 
                 restaurantDto.add(restaurant);

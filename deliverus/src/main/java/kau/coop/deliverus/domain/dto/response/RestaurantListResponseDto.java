@@ -12,4 +12,6 @@ public class RestaurantListResponseDto {
     private Double rating;
     private String intro;
     private String category;
+    private Long deliveryFee;
+    private Long minOrderPrice;
 }
