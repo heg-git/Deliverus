@@ -237,6 +237,15 @@ public class PartyServiceImpl implements PartyService{
         partyRepository.memberJoin(partyMember, partyMember.getParty().getPartyId());
     }
 
+    @Override
+    public Long queryState(Long partyId) throws Exception {
+        Optional<Party> party = partyRepository.findById(partyId);
+        if (party.isEmpty()) {
+            throw new Exception(party + " ID를 가진 파티가 앖습니다");
+        }
+        return party.get().getState();
+    }
+
     public Double haversine(Double lat1, Double lon1, Double lat2, Double lon2) {
         Double dLat = Math.toRadians(lat2 - lat1);
         Double dLon = Math.toRadians(lon2 - lon1);

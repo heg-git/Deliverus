@@ -128,4 +128,28 @@ public class PartyController {
         }
     }
 
+    // party의 state를 질의하는 문제입니다.
+    @GetMapping("api/party/state")
+    public ResponseEntity<Long> queryState(@RequestParam("nickname") String nickname) {
+        // nickname을 가진 파티원이 없다면 no content error
+        Long partyId;
+        try {
+            partyId = partyService.getPartyExistenceByNickname(nickname);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+
+        // nickname을 가진 파티원이 있다면 state를 가져옴
+        Long state;
+        try {
+            state = partyService.queryState(partyId);
+        } catch (Exception e) {
+            // 방의 state가 설정되어 있지 않을 때 (치명적 오류)
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return new ResponseEntity<>(state, HttpStatus.OK);
+    }
+
+
 }

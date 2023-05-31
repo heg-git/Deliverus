@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,7 +29,7 @@ public class OrderController {
 
     // 방장이 주문 시작하면 호출하는 함수
     @PostMapping("api/order/deliverOrder")
-    public ResponseEntity<PartyInfoResponseDto> deliverOrder(@RequestParam("id") Long partyId) {
+    public ResponseEntity<PartyInfoResponseDto> deliverOrder(@RequestBody Long partyId) {
         try {
             // order 접수 후 state 변경
             if(!(orderService.getPartyState(partyId).equals(PartyState.ORDER_AWAIT.getState()))) {
@@ -57,7 +54,7 @@ public class OrderController {
 
     // 파티멤버 개인별 주문 접수
     @PostMapping("api/order/payment")
-    public ResponseEntity<List<Order>> payment(@RequestParam("order") PaymentRequestDto dto){
+    public ResponseEntity<List<Order>> payment(@RequestBody PaymentRequestDto dto){
         try {
             // 결제 진행 로직
             if(!(orderService.getPartyState(dto.getPartyId()).equals(PartyState.PAYMENT_AWAIT.getState()))) {
