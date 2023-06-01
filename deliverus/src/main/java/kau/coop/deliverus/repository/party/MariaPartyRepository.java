@@ -86,6 +86,7 @@ public class MariaPartyRepository implements PartyRepository{
     }
 
     @Override
+    @Transactional
     public Optional<PartyMember> updateMemberPayed(PartyMember partyMember) {
         PartyMember pm = em.createQuery("select pm from PartyMember pm where pm.nickname=:nickname", PartyMember.class)
                 .setParameter("nickname", partyMember.getNickname())
@@ -97,6 +98,7 @@ public class MariaPartyRepository implements PartyRepository{
     }
 
     @Override
+    @Transactional
     public Optional<Party> updatePartyState(Long partyId, Long state) {
         Party p = em.createQuery("select p from Party p where p.id=:id", Party.class)
                 .setParameter("id", partyId)
