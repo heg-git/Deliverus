@@ -1,5 +1,6 @@
 package kau.coop.deliverus.controller.order;
 
+import kau.coop.deliverus.domain.dto.request.DeliverOrderRequestDto;
 import kau.coop.deliverus.domain.dto.request.PartyMemberOrderRequestDto;
 import kau.coop.deliverus.domain.dto.request.PaymentRequestDto;
 import kau.coop.deliverus.domain.dto.response.OrderResultResponseDto;
@@ -29,18 +30,19 @@ public class OrderController {
 
     // 방장이 주문 시작하면 호출하는 함수
     @PostMapping("api/order/deliverOrder")
-    public ResponseEntity<PartyInfoResponseDto> deliverOrder(@RequestBody Long partyId) {
+    public ResponseEntity<PartyInfoResponseDto> deliverOrder(@RequestBody DeliverOrderRequestDto requestDto) {
         try {
             // order 접수 후 state 변경
-            if(!(orderService.getPartyState(partyId).equals(PartyState.ORDER_AWAIT.getState()))) {
+            if(!(orderService.getPartyState(requestDto.getPartyId()).equals(PartyState.ORDER_AWAIT.getState()))) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
             }
 
-            orderService.deliverOrder(partyId);
-            PartyInfoResponseDto response = partyService.getPartyInfoById(partyId);
+            orderService.deliverOrder(requestDto.getPartyId());
+            PartyInfoResponseDto response = partyService.getPartyInfoById(requestDto.getPartyId());
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e) {
+            e.printStackTrace();
 
             if(e instanceof NullPointerException) {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
