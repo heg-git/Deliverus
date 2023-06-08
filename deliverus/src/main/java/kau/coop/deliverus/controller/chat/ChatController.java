@@ -28,16 +28,15 @@ public class ChatController {
     @MessageMapping({"/chat"})
     public void sendMessage(ChatMessageRequestDto requestDto){
         chatService.sendMessage(requestDto);
-        log.info("메세지 전송"+ requestDto.toString());
     }
 
     @GetMapping("api/chat/message")
-    public ResponseEntity<List<ChatMessageResponseDto>> getMessageList(@RequestParam("name") String name){
+    public ResponseEntity<List<ChatMessageResponseDto>> getMessageList(@RequestParam("name") String name, @RequestParam("id") Long id){
         try {
-            List<ChatMessageResponseDto> results = chatService.loadChatMessages(name);
+            List<ChatMessageResponseDto> results = chatService.loadChatMessages(name, id);
             return new ResponseEntity<>(results, HttpStatus.OK);
         } catch (Exception e) {
-            log.info(e.getMessage());
+            log.info("가져오기 오류 발생 "+e.getMessage());
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
     }

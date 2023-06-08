@@ -13,14 +13,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +33,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void sendMessage(ChatMessageRequestDto requestDto) {
-
-        ChatMessage chatMessage = ChatMessage.builder()
-                .type(1L)
-                .time(setTime())
-                .sender(requestDto.getSender())
-                .chat(requestDto.getChat())
-                .build();
-
-        chatRepository.saveMessage(chatMessage, requestDto.getChannelId());
-        simpMessagingTemplate.convertAndSend("/sub/chat/" + requestDto.getChannelId(), chatMessage);
+        sendMessage(1L, requestDto.getSender(), requestDto.getChat(), requestDto.getChannelId());
     }
 
     @Override
@@ -66,37 +53,43 @@ public class ChatServiceImpl implements ChatService {
             sender = sender.substring(1, sender.length()-1);
 
             try {
-                if (chatRepository.findMemberByName(sender).isPresent()) log.info("연결은 되었지만 이미 데이터가 존재하므로 공지x");
-                else throw new Exception("Header error!");
+                chatRepository.findMemberByName(sender);
+                if(chatRepository.isLeaved(sender, channelId)){
+                    log.info("채팅을 친사람이고 나갔다 들어왔으므로 여기 실행");
+                    Optional<Timestamp> timestamp = chatRepository.findLastEntranceTime(sender);
+                    Optional<List<ChatMessage>> optionalChatMessages = chatRepository.loadChatMessages(sender, channelId, timestamp.get());
+                    List<ChatMessage> chatMessageList = optionalChatMessages.get();
+                    ChatMessage lastChatMessage = chatMessageList.get(0);
+
+                    for(ChatMessage cm : chatMessageList) if(cm.getSender().equals(sender)) lastChatMessage = cm;
+
+                    if(lastChatMessage.getType().equals(-1L)) {
+                        sendMessage(0L, sender, sender+"님이 입장하셨습니다!", channelId);
+                        log.info("나갔다 온 사람이며 한 번만 공지");
+                    }
+                }
+
             } catch (NoResultException | EmptyResultDataAccessException e){
-                ChatMessage chatMessage = ChatMessage.builder()
-                        .type(0L)
-                        .time(setTime())
-                        .sender(sender)
-                        .chat(sender+"님이 입장하셨습니다!")
-                        .build();
-                log.info("입장: "+chatMessage.toString());
-                chatRepository.saveMessage(chatMessage, channelId);
-                simpMessagingTemplate.convertAndSend("/sub/chat/" + channelId, chatMessage);
+                log.info("알림: "+e.getMessage());
+                sendMessage(0L, sender, sender+"님이 입장하셨습니다!", channelId);
             }
         }
-
     }
 
     @Override
     public void disconnectedEvent(SessionDisconnectEvent event) {
-
+        //연결 끊겼을 시 이벤트 함수
     }
 
     @Override
-    public List<ChatMessageResponseDto> loadChatMessages(String name) throws Exception {
+    public List<ChatMessageResponseDto> loadChatMessages(String name, Long id) throws Exception {
 
         List<ChatMessageResponseDto> responseDto = new ArrayList<>();
 
-        Optional<Timestamp> timestamp = chatRepository.findEntranceTime(name);
-
+        Optional<Timestamp> timestamp = chatRepository.findLastEntranceTime(name);
         if(timestamp.isEmpty()) throw new Exception("Not a participants");
-        Optional<List<ChatMessage>> chatMessages = chatRepository.loadChatMessages(name, timestamp.get());
+        log.info("마지막 입장시간: "+timestamp.get().toString());
+        Optional<List<ChatMessage>> chatMessages = chatRepository.loadChatMessages(name, id, timestamp.get());
         if(chatMessages.isEmpty()) throw new Exception("No messages");
 
         for(ChatMessage c : chatMessages.get()){
@@ -111,9 +104,18 @@ public class ChatServiceImpl implements ChatService {
         return responseDto;
     }
 
-    private Timestamp setTime(){
-        ZoneId zoneId = ZoneId.of("Asia/Seoul");
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
-        return Timestamp.valueOf(zonedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    @Override
+    public void sendMessage(Long type, String sender, String chat, Long id){
+
+        ChatMessage chatMessage = ChatMessage.builder()
+                .time(ChatMessage.setTime())
+                .chat(chat)
+                .sender(sender)
+                .type(type)
+                .build();
+        log.info("전송 되는 메세지 : " + chatMessage.toString());
+        chatRepository.saveMessage(chatMessage, id);
+        simpMessagingTemplate.convertAndSend("/sub/chat/" + id, chatMessage);
     }
+
 }

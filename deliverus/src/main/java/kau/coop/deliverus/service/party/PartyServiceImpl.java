@@ -4,14 +4,18 @@ import kau.coop.deliverus.domain.dto.request.*;
 import kau.coop.deliverus.domain.dto.response.PartyInfoResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyListResponseDto;
 import kau.coop.deliverus.domain.dto.response.PartyMemberResponseDto;
+import kau.coop.deliverus.domain.entity.ChatMessage;
 import kau.coop.deliverus.domain.entity.Party;
 import kau.coop.deliverus.domain.entity.PartyMember;
 import kau.coop.deliverus.domain.entity.Restaurant;
 import kau.coop.deliverus.domain.model.PartyState;
+import kau.coop.deliverus.repository.chat.ChatRepository;
 import kau.coop.deliverus.repository.party.PartyRepository;
 import kau.coop.deliverus.repository.restaurant.RestaurantRepository;
+import kau.coop.deliverus.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,7 @@ public class PartyServiceImpl implements PartyService{
 
     private final PartyRepository partyRepository;
     private final RestaurantRepository restaurantRepository;
+    private final ChatService chatService;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     private static final Double R = 6371.0;
@@ -105,16 +110,19 @@ public class PartyServiceImpl implements PartyService{
     }
 
     @Override
-    public Party leaveParty(String nickname) throws Exception{
+    public Party leaveParty(String nickname) throws Exception {
         Optional<PartyMember> partyMember = partyRepository.findByNickname(nickname);
-        if(partyMember.isEmpty()) {
+        if (partyMember.isEmpty()) {
             log.info("해당 멤버 없음!");
             throw new Exception("Doesn't exist anywhere");
         }
+
         PartyMember pm = partyMember.get();
+        Long partyId = pm.getParty().getPartyId();
+
+        chatService.sendMessage(-1L, nickname, nickname + "님이 퇴장하셨습니다!", partyId);
         partyRepository.deleteMember(pm);
         return pm.getParty();
-
     }
 
     @Override
@@ -194,7 +202,7 @@ public class PartyServiceImpl implements PartyService{
     public List<PartyListResponseDto> getPartyListByLocation(PartyListRequestDto requestDto) {
         List<PartyListResponseDto> responseDtoList = new ArrayList<>();
         List<Party> partyList = partyRepository.findAll();
-        log.info("party 방의 개수: " + partyList.size());
+
         for(Party p : partyList) {
             Restaurant r = restaurantRepository.findById(p.getRestaurantId());
             double distance = haversine(requestDto.getLatitude(), requestDto.getLongitude(), p.getLatitude(), p.getLongitude()) * 1000;
