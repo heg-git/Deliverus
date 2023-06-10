@@ -12,7 +12,9 @@ public interface ChatRepository {
 
     Optional<String> findMemberByName(String name);
 
-    Optional<List<ChatMessage>> loadChatMessages(String name, Timestamp timestamp);
+    Optional<List<ChatMessage>> loadChatMessages(String name, Long id, Timestamp timestamp);
 
-    Optional<Timestamp> findEntranceTime(String name);
+    Optional<Timestamp> findLastEntranceTime(String name);
+
+    boolean isLeaved(String name, Long id);
 }

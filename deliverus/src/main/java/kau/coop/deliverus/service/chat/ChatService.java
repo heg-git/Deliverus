@@ -11,10 +11,12 @@ public interface ChatService {
 
     void sendMessage(ChatMessageRequestDto requestDto);
 
+    void sendMessage(Long type, String sender, String chat, Long id);
+
     void connectedEvent(SessionConnectedEvent event) throws Exception;
 
     void disconnectedEvent(SessionDisconnectEvent event);
 
-    List<ChatMessageResponseDto> loadChatMessages(String name) throws Exception;
+    List<ChatMessageResponseDto> loadChatMessages(String name, Long id) throws Exception;
 
 }
