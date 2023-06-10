@@ -12,10 +12,13 @@ import kau.coop.deliverus.service.order.OrderService;
 import kau.coop.deliverus.service.party.PartyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @Slf4j
@@ -79,7 +82,16 @@ public class OrderController {
 
     // 앱뷰용 결제 api
     @GetMapping("api/order/payment")
-    public ResponseEntity<List<Order>> appPayment(@RequestParam("imp_uid") String iuid, @RequestParam("merchant_uid") String muid){
+    public ResponseEntity<Object> appPayment(@RequestParam("imp_uid") String iuid, @RequestParam("merchant_uid") String muid){
+        URI redirectUri = null;
+        try {
+            redirectUri = new URI("https://deliverus.online");
+        } catch (URISyntaxException e) {
+            log.info("URL을 찾는 데에 실패했습니다.");
+            return new ResponseEntity<>(null, HttpStatus.SEE_OTHER);
+        }
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(redirectUri);
         try {
             String[] parse = muid.split("\\?");
             Long id = Long.parseLong(parse[1]);
@@ -88,18 +100,18 @@ public class OrderController {
             // 결제 진행 로직
             if(!(orderService.getPartyState(id).equals(PartyState.PAYMENT_AWAIT.getState()))) {
                 // PAYMENT_AWAIT state가 아니라면, 오류를 출력합니다.
-                return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
             }
-            PartyMember partyMember = orderService.payOrder(nickname);
+            orderService.payOrder(nickname);
 
-            return new ResponseEntity<>(partyMember.getOrder(), HttpStatus.OK);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
         }catch (Exception e) {
             if(e instanceof NullPointerException) {
                 // partyId에 해당하는 사람이 없을 때
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
             }
             else {
-                return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
             }
         }
     }
