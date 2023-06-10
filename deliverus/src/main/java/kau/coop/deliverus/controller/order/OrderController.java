@@ -77,6 +77,33 @@ public class OrderController {
         }
     }
 
+    // 앱뷰용 결제 api
+    @GetMapping("api/order/payment")
+    public ResponseEntity<List<Order>> appPayment(@RequestParam("imp_uid") String iuid, @RequestParam("merchant_uid") String muid){
+        try {
+            String[] parse = muid.split("\\?");
+            Long id = Long.parseLong(parse[1]);
+            String nickname = parse[2];
+
+            // 결제 진행 로직
+            if(!(orderService.getPartyState(id).equals(PartyState.PAYMENT_AWAIT.getState()))) {
+                // PAYMENT_AWAIT state가 아니라면, 오류를 출력합니다.
+                return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            }
+            PartyMember partyMember = orderService.payOrder(nickname);
+
+            return new ResponseEntity<>(partyMember.getOrder(), HttpStatus.OK);
+        }catch (Exception e) {
+            if(e instanceof NullPointerException) {
+                // partyId에 해당하는 사람이 없을 때
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+            else {
+                return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
+    }
+
     // 주문완료 후 정보 받아오기
     @GetMapping("api/order")
     public ResponseEntity<OrderResultResponseDto> getOrder(@RequestParam("id") Long partyId) {
