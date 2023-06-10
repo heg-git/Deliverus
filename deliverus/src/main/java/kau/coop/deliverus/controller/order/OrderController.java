@@ -85,8 +85,6 @@ public class OrderController {
             Long id = Long.parseLong(parse[1]);
             String nickname = parse[2];
 
-            System.out.println("id = " + id);
-            System.out.println("nickname = " + nickname);
             // 결제 진행 로직
             if(!(orderService.getPartyState(id).equals(PartyState.PAYMENT_AWAIT.getState()))) {
                 // PAYMENT_AWAIT state가 아니라면, 오류를 출력합니다.
